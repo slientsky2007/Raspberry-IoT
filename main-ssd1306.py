@@ -83,24 +83,30 @@ def stats(oled, font2, datem, cpum, memm, ipadd, netm, thm):
 		draw.text((0, 50), thm, font=font2, fill="white")
 	
 def main():
+	#串口设备i2c ssd1306 128*64 OLED 显示器
 	serial = i2c(port=1, address=0x3C)
-	sensor = Adafruit_DHT.DHT22
 	oled = ssd1306(serial)
-	timesleep = 1
-	wlanname = "wlan0"
+	#温湿度传感器DHT22
+	sensor = Adafruit_DHT.DHT22
 	netobj = nettest(wlanname)
-    #font = ImageFont.load_default()  
-    #@font2 = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 14) 
+	wlanname = "wlan0"
+	
+	timesleep = 1
+
+    #font = ImageFont.load_default() 
 	font_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
 								'fonts', 'C&C Red Alert [INET].ttf'))
 	font2 = ImageFont.truetype(font_path, 12)
-	
+
+	#因为cpu信息读取时导致阻塞比较奇怪，故另起子线程
 	cputhread = cpu(timesleep)
 	cputhread.start()
-	
+	#初始化传感器子线程
+	#硬件设备数据读取存在延时，新起子线程异步执行，避免阻塞主线程
 	dht22thread = dht22(sensor, 24)
 	dht22thread.start()
 	
+	#初始化要OLED显示的内容
 	cpum = ""
 	thm = ""
 	datem = ""
@@ -109,8 +115,16 @@ def main():
 	netm = ""
 	
 	while True:
+		#默认第一次刷新屏幕，输出为空;
+		stats(oled, font2, datem, cpum, memm, ipadd, netm, thm)
+		#每次刷新屏幕间隔时间
+		time.sleep(timesleep)
 		
+		#先判断子线程是否获取到数据，如果不为空则重新启动子线程
+		#如果还没有获取到数据，则原子线程继续运行，等待获取读数
 		if cputhread.cpum != "":
+			#每次子线程执行完毕获取读数后，赋值给主线程对应变量
+			#(PS:这样做是为了保持oled上一直有数据展示,但展示的数据有可能不是实时的)
 			cpum = cputhread.cpum
 			cputhread = cpu(timesleep)
 			cputhread.start()
@@ -119,9 +133,6 @@ def main():
 			thm = dht22thread.thm
 			dht22thread = dht22(sensor, 24)
 			dht22thread.start()
-		
-		#等待子线程完成数据读取
-		time.sleep(timesleep)
 				
 		try:
 			signal.signal(signal.SIGALRM, handler)
@@ -138,9 +149,6 @@ def main():
 			memm = ""
 			ipadd = ""
 			netm = ""
-
-		stats(oled, font2, datem, cpum, memm, ipadd, netm, thm)
-
 
 if __name__ == "__main__":
 	def handler(signum, frame):
