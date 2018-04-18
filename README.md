@@ -14,7 +14,6 @@
 sudo apt-get install python3-dev python3-pip libfreetype6-dev libjpeg-dev build-essential
 sudo apt-get install libopenjp2-7-dev
 sudo apt install libsdl-dev libportmidi-dev libsdl-ttf2.0-dev libsdl-mixer1.2-dev libsdl-image1.2-dev
-
 ```
 
 ## 安装相关python轮子
