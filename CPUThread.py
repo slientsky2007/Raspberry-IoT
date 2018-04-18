@@ -2,7 +2,7 @@ import threading
 import os
 import sys
 import time
-from  datetime  import  *
+import datetime
 
 try:
 	import psutil
