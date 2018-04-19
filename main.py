@@ -9,13 +9,10 @@ import signal
 
 #自定义类
 from SYSTEMINFO import system
+from BASICDEF import bytes2human
 from CPUThread import cpu
 from DHT22Thread import dht22
-from BASICDEF import bytes2human
 from SSD1306Thread import ssd1306
-
-#轮子
-import Adafruit_DHT
 	
 def main():
 	#温湿度传感器DHT22
@@ -58,23 +55,9 @@ def main():
 		#每次刷新数据间隔时间
 		time.sleep(timesleep)
 		
-		#OLED子线程默认1秒刷新一次屏幕，
-		#主线程不断循环提交需要显示的数据给OLED就ok了
+		#默认显示欢迎界面，OLED子线程默认1秒刷新一次屏幕;
+		#主线程不断循环设置需要显示的数据给OLED子线程就ok了;
 		ssd1306thread.set_display(x, y, datem, cpum, memm, ipadd, netm, thm)
-		
-		#先判断子线程是否获取到数据，如果不为空则重新启动子线程
-		#如果还没有获取到数据，则原子线程继续运行，等待获取读数
-		if cputhread.cpum != "":
-			#每次子线程执行完毕获取读数后，赋值给主线程对应变量
-			#(PS:这样做是为了保持oled上一直有数据展示,但展示的数据不是实时的)
-			cpum = cputhread.cpum
-			cputhread = cpu(timesleep)
-			cputhread.start()
-
-		if dht22thread.thm != "":
-			thm = dht22thread.thm
-			dht22thread = dht22(sensor, 24)
-			dht22thread.start()
 		
 		#自定义signal handler，如果执行的方法超时，则抛出异常继续循环
 		#应该将系统基本信息获取方法抽取出来做成system类
@@ -82,10 +65,16 @@ def main():
 			signal.signal(signal.SIGALRM, handler)
 			signal.alarm(timesleep)
 			
+			#系统基础信息
 			datem = str(system.getDateTime())
 			memm = system.get_mem_usage()
 			ipadd = "Wlan0: " + system.getIP()
 			netm = system.get_RT_network_traffic(timesleep)
+			
+			#子线程自身不断循环获取最新读数
+			#由于传感器子线程默认timesleep=1并且需要等待读取数据，传感器读取的值是异步的，会有延时
+			thm = dht22thread.thm
+			cpum = cputhread.cpum
 			
 			signal.alarm(0)
 			

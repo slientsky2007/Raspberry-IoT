@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import threading
 import os
 import sys
@@ -14,10 +15,13 @@ class cpu(threading.Thread):
 	def __init__(self, timesleep):
 		threading.Thread.__init__(self)
 		self.cpum = ""
+		self.cputimesleep = 1
 		self.timesleep = timesleep
 	
 	def run(self):
-		self.cpum = self.cpu_usage()
+		while True:
+			time.sleep(self.cputimesleep)
+			self.cpum = self.cpu_usage()
 
 	def cpu_usage(self, interval=1):
 		# load average, uptime

@@ -15,6 +15,7 @@ class ssd1306(threading.Thread):
 	def __init__(self, timesleep=1):
 		threading.Thread.__init__(self)
 		self.timesleep = timesleep
+		self.welcometimesleep = 3
 		
 		#串口设备i2c ssd1306 128*64 OLED 显示器
 		self.serial = i2c(port=1, address=0x3C)
@@ -34,7 +35,7 @@ class ssd1306(threading.Thread):
 		self.memm = ""
 		self.netm = ""
 		self.thm = ""
-		self.welcome = ""
+		self.welcomemessage = "Hi SlientSky"
 	
 	def run(self):
 		while True:
@@ -45,7 +46,7 @@ class ssd1306(threading.Thread):
 		x = self.x
 		y = self.y
 		with canvas(sefl.oled) as draw:
-			if self.welcome == "":
+			if self.welcomemessage == "":
 				draw.text((x, y), self.datem, fill="white")
 				draw.text((x, y+10), self.cpum, font=self.font2, fill="white")
 				draw.text((x, y+20), self.memm, font=self.font2, fill="white")
@@ -53,8 +54,9 @@ class ssd1306(threading.Thread):
 				draw.text((x, y+40), self.netm, font=self.font2, fill="white")
 				draw.text((x, y+50), self.thm, font=self.font2, fill="white")
 			else:
-				draw.text((30, 25), self.welcome, fill="white")
-				self.welcome = ""
+				draw.text((30, 25), self.welcomemessage, fill="white")
+				time.sleep(self.welcometimesleep)
+				self.welcomemessage = ""
 	
 	def set_display(x, y, datem, cpum, memm, ipadd, netm, thm):
 		self.x = x
@@ -66,6 +68,6 @@ class ssd1306(threading.Thread):
 		self.thm = thm
 
 	#设置开屏信息
-	def set_welcome(self, welcomemessage):
-		self.welcome = welcomemessage
+	def set_welcomemessage(self, welcomemessage):
+		self.welcomemessage = welcomemessage
 		
