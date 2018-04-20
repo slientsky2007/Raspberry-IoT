@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import serial
+import datetime
   
 class pmsa003(threading.Thread):
 	def __init__(self, timesleep=2):
@@ -13,26 +14,42 @@ class pmsa003(threading.Thread):
 		#usb口转UART
 		self.pm_device = '/dev/ttyUSB0'
 		self.open_pm_port()
+		
+		self.apm10 = ""
+		self.apm25 = ""
+		self.apm100 = ""
+		self.pm25 = ""
+		self.pm10 = ""
+		self.pm100 = ""
+		self.gt03um = ""
+		self.gt05um = ""
+		self.gt10um = ""
+		self.gt25um = ""
+		self.gt50um = ""
+		self.gt100um = ""
+		
+		self.pm_res = False
 	
 	def run(self):
 		while True:
 			time.sleep(self.timesleep)
-			pm_res = self.get_pm_data()
-			if pm_res == False:
+			self.pm_res = self.get_pm_data()
+			if self.pm_res == False:
 				continue
 
-			apm10 = pm_res['apm10']
-			apm25 = pm_res['apm25']
-			apm100 = pm_res['apm100']
-			pm25 = pm_res['pm25']
-			pm10 = pm_res['pm10']
-			pm100 = pm_res['pm100']
-			gt03um = pm_res['gt03um']
-			gt05um = pm_res['gt05um']
-			gt10um = pm_res['gt10um']
-			gt25um = pm_res['gt25um']
-			gt50um = pm_res['gt50um']
-			gt100um = pm_res['gt100um']
+			self.apm10 = str(self.pm_res['apm10'])
+			self.apm25 = str(self.pm_res['apm25'])
+			self.apm100 = str(self.pm_res['apm100'])
+			self.pm25 = str(self.pm_res['pm25'])
+			self.pm10 = str(self.pm_res['pm10'])
+			self.pm100 = str(self.pm_res['pm100'])
+			self.gt03um = str(self.pm_res['gt03um'])
+			self.gt05um = str(self.pm_res['gt05um'])
+			self.gt10um = str(self.pm_res['gt10um'])
+			self.gt25um = str(self.pm_res['gt25um'])
+			self.gt50um = str(self.pm_res['gt50um'])
+			self.gt100um = str(self.pm_res['gt100um'])
+			
 			
 	def open_pm_port(self):
 		self.port = serial.Serial(self.pm_device, baudrate=9600, timeout=2.0)
@@ -53,6 +70,7 @@ class pmsa003(threading.Thread):
 	def get_pm_data(self):
 		#self.port.write(b'\x42\x4D\xE2\x00\x00\x01\x71')
 		rcv = self.read_pm_line()
+		# print(rcv)
 		if sum(rcv[:-2]) == rcv[-2] * 256 + rcv[-1]:
 			res = {'timestamp': datetime.datetime.now(),
 					'apm10': rcv[4] * 256 + rcv[5],
@@ -67,9 +85,9 @@ class pmsa003(threading.Thread):
 					'gt25um': rcv[22] * 256 + rcv[23],
 					'gt50um': rcv[24] * 256 + rcv[25],
 					'gt100um': rcv[26] * 256 + rcv[27]}
-            return res
-        else:
-            return False
+			return res
+		else:
+			return False
 		
 	#传感器XX数据校验，将偏差值较大数据丢弃
 	def checkT():
@@ -81,11 +99,23 @@ def main():
 	
 	while True:
 		time.sleep(2)
-		print("pm2.5:%s ug/m^3" % \(pmsa003thread.pm25))
-		print("pm10:%s ug/m^3" % \(pmsa003thread.pm10))
-		print("apm2.5:%s ug/m^3" % \(pmsa003thread.apm25))
-		print("apm10:%s ug/m^3" \ %(pmsa003thread.apm10))
-		print("")
+		if pmsa003thread.pm_res == False:
+			continue
+			
+		print("apm2.5: " + pmsa003thread.apm25 + "ug/m^3")
+		print("apm1.0: " + pmsa003thread.apm10 + "ug/m^3")
+		print("apm10: " + pmsa003thread.apm100 + "ug/m^3")
+		print("pm2.5: " + pmsa003thread.pm25 + "ug/m^3")
+		print("pm1.0: " + pmsa003thread.pm10 + "ug/m^3")
+		print("pm10: " + pmsa003thread.pm100 + "ug/m^3")
+		print("gt0.3um: " + pmsa003thread.gt03um + "n/0.1L^3")
+		print("gt0.5um: " + pmsa003thread.gt05um + "n/0.1L^3")
+		print("gt1.0um: " + pmsa003thread.gt10um + "n/0.1L^3")
+		print("gt2.5um: " + pmsa003thread.gt25um + "n/0.1L^3")
+		print("gt5.0um: " + pmsa003thread.gt50um + "n/0.1L^3")
+		print("gt10um: " + pmsa003thread.gt100um + "n/0.1L^3")
+		print("--------------------------------")
+		
 
 if __name__ == "__main__":
 	try:
