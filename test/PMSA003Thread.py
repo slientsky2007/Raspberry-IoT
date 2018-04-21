@@ -101,19 +101,22 @@ def main():
 		time.sleep(2)
 		if pmsa003thread.pm_res == False:
 			continue
-			
-		print("apm2.5: " + pmsa003thread.apm25 + "ug/m^3")
-		print("apm1.0: " + pmsa003thread.apm10 + "ug/m^3")
-		print("apm10: " + pmsa003thread.apm100 + "ug/m^3")
-		print("pm2.5: " + pmsa003thread.pm25 + "ug/m^3")
-		print("pm1.0: " + pmsa003thread.pm10 + "ug/m^3")
-		print("pm10: " + pmsa003thread.pm100 + "ug/m^3")
-		print("gt0.3um: " + pmsa003thread.gt03um + "n/0.1L^3")
-		print("gt0.5um: " + pmsa003thread.gt05um + "n/0.1L^3")
-		print("gt1.0um: " + pmsa003thread.gt10um + "n/0.1L^3")
-		print("gt2.5um: " + pmsa003thread.gt25um + "n/0.1L^3")
-		print("gt5.0um: " + pmsa003thread.gt50um + "n/0.1L^3")
-		print("gt10um: " + pmsa003thread.gt100um + "n/0.1L^3")
+
+		pmmessage = "apm2.5: %sug/m^3, apm1.0: %sug/m^3, apm10: %sug/m^3, pm2.5: %sug/m^3, pm1.0: %sug/m^3, pm10: %sug/m^3, gt0.3um: %sn/0.1L^3, gt0.5um: %sn/0.1L^3, gt1.0um: %sn/0.1L^3, gt2.5um: %sn/0.1L^3, gt5.0um: %sn/0.1L^3, gt10um: %sn/0.1L^3" % \
+			(pmsa003thread.apm25, pmsa003thread.apm10, pmsa003thread.apm100, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.pm100, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um, pmsa003thread.gt50um, pmsa003thread.gt100um)
+		print(pmmessage)
+		# print("apm2.5: " + pmsa003thread.apm25 + "ug/m^3")
+		# print("apm1.0: " + pmsa003thread.apm10 + "ug/m^3")
+		# print("apm10: " + pmsa003thread.apm100 + "ug/m^3")
+		# print("pm2.5: " + pmsa003thread.pm25 + "ug/m^3")
+		# print("pm1.0: " + pmsa003thread.pm10 + "ug/m^3")
+		# print("pm10: " + pmsa003thread.pm100 + "ug/m^3")
+		# print("gt0.3um: " + pmsa003thread.gt03um + "n/0.1L^3")
+		# print("gt0.5um: " + pmsa003thread.gt05um + "n/0.1L^3")
+		# print("gt1.0um: " + pmsa003thread.gt10um + "n/0.1L^3")
+		# print("gt2.5um: " + pmsa003thread.gt25um + "n/0.1L^3")
+		# print("gt5.0um: " + pmsa003thread.gt50um + "n/0.1L^3")
+		# print("gt10um: " + pmsa003thread.gt100um + "n/0.1L^3")
 		print("--------------------------------")
 		
 
