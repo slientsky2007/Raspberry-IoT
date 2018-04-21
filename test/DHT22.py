@@ -1,5 +1,5 @@
 #!/usr/bin/env python3  
-
+import time
 import Adafruit_DHT
 
 def getTH(device):
@@ -14,6 +14,7 @@ def main():
 	sensor = Adafruit_DHT.DHT22
 	
 	while True:
+		time.sleep(1)
 		print(getTH(sensor))
 
 if __name__ == "__main__":

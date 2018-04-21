@@ -20,17 +20,26 @@ class tdht22(threading.Thread):
 	def run(self):
 		while True:
 			time.sleep(self.timesleep)
-			self.thm = self.getTH()
-			# print(self.thm)
+			thm = self.getTH()
+			if thm != False:
+				self.thm = thm
 
 	def getTH(self):
 		humidity, temperature = Adafruit_DHT.read_retry(self.sensor, self.pin)#24 是 GPIO 的引脚编号
+		print(humidity, end='')
+		print("   ", end='')
+		print(temperature)
+		if humidity == None:
+			return False
+		if temperature == None:
+			return False
+
 		H = str(round(humidity,2)) + '%'
 		a = u'°C'
 		T = str(round(temperature,2)) + a
-		return "T&H:%s|%s" % \
-				(T, H)	
-	
+		return "T&H: %s | %s" % \
+				(T, H)
+
 	#传感器温度数据校验，将偏差值较大数据丢弃
 	def checkT():
 		return ""

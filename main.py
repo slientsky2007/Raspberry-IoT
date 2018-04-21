@@ -69,6 +69,7 @@ def main():
 			#子线程自身不断循环获取最新读数
 			#由于传感器子线程默认timesleep=1并且需要等待读取数据，传感器读取的值是异步的，会有延时
 			thm = dht22thread.thm
+			# thm = dht22thread.getTH()
 			cpum = cputhread.cpum
 			
 			signal.alarm(0)
