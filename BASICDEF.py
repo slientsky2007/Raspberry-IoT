@@ -2,7 +2,10 @@
 
 import sys, time, os
 
-	def bytes2human(self, n):
+class basic():
+
+	@staticmethod
+	def bytes2human(n):
 		"""
 		>>> bytes2human(10000)
 		'9K'

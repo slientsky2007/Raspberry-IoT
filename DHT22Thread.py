@@ -8,21 +8,23 @@ import time
 import Adafruit_DHT
 
   
-class dht22(threading.Thread):
-	def __init__(self, sensor, pin):
+class tdht22(threading.Thread):
+	def __init__(self, pin):
 		threading.Thread.__init__(self)
 		self.thm = ""
 		self.timesleep = 1
-		self.sensor = sensor
+		#温湿度传感器DHT22
+		self.sensor = Adafruit_DHT.DHT22
 		self.pin = pin
 	
 	def run(self):
 		while True:
 			time.sleep(self.timesleep)
-			self.thm = self.getTH(self.sensor, self.pin)
+			self.thm = self.getTH()
+			# print(self.thm)
 
-	def getTH(self, sensor, pin):
-		humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)#24 是 GPIO 的引脚编号
+	def getTH(self):
+		humidity, temperature = Adafruit_DHT.read_retry(self.sensor, self.pin)#24 是 GPIO 的引脚编号
 		H = str(round(humidity,2)) + '%'
 		a = u'°C'
 		T = str(round(temperature,2)) + a
@@ -35,4 +37,14 @@ class dht22(threading.Thread):
 	#传感器湿度数据校验，将偏差值较大数据丢弃
 	def checkH():
 		return ""
+
+# def main():
+	# thread = tdht22(24)
+	# thread.start()
+	
+# if __name__ == "__main__":
+	# try:
+		# main()
+	# except KeyboardInterrupt:
+		# pass
 		

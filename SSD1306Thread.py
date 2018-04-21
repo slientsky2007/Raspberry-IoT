@@ -11,7 +11,7 @@ from luma.core.render import canvas
 from PIL import ImageDraw, ImageFont
 
   
-class ssd1306(threading.Thread):
+class tssd1306(threading.Thread):
 	def __init__(self, timesleep=1):
 		threading.Thread.__init__(self)
 		self.timesleep = timesleep
@@ -23,9 +23,9 @@ class ssd1306(threading.Thread):
 		
 		#字体
 		#font = ImageFont.load_default() 
-		font_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
+		self.font_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
 								'fonts', 'C&C Red Alert [INET].ttf'))
-		font2 = ImageFont.truetype(font_path, 12)
+		self.font2 = ImageFont.truetype(self.font_path, 12)
 		
 		#显示数据初始化
 		self.x = 0
@@ -33,6 +33,7 @@ class ssd1306(threading.Thread):
 		self.datem = ""
 		self.cpum = ""
 		self.memm = ""
+		self.ipadd = ""
 		self.netm = ""
 		self.thm = ""
 		self.welcomemessage = "Hi SlientSky"
@@ -45,12 +46,12 @@ class ssd1306(threading.Thread):
 	def stats(self):
 		x = self.x
 		y = self.y
-		with canvas(sefl.oled) as draw:
+		with canvas(self.oled) as draw:
 			if self.welcomemessage == "":
 				draw.text((x, y), self.datem, fill="white")
 				draw.text((x, y+10), self.cpum, font=self.font2, fill="white")
 				draw.text((x, y+20), self.memm, font=self.font2, fill="white")
-				draw.text((X, y+30), self.ipadd, font=self.font2, fill="white")
+				draw.text((x, y+30), self.ipadd, font=self.font2, fill="white")
 				draw.text((x, y+40), self.netm, font=self.font2, fill="white")
 				draw.text((x, y+50), self.thm, font=self.font2, fill="white")
 			else:
@@ -58,12 +59,13 @@ class ssd1306(threading.Thread):
 				time.sleep(self.welcometimesleep)
 				self.welcomemessage = ""
 	
-	def set_display(x, y, datem, cpum, memm, ipadd, netm, thm):
+	def set_display(self, x, y, datem, cpum, memm, ipadd, netm, thm):
 		self.x = x
 		self.y = y
 		self.datem = datem
 		self.cpum = cpum
-		self.memm = ipadd
+		self.memm = memm
+		self.ipadd = ipadd
 		self.netm = netm
 		self.thm = thm
 

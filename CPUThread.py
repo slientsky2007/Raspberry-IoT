@@ -11,7 +11,7 @@ except ImportError:
 	print("The psutil library was not found. Run 'sudo -H pip install psutil' to install it.")
 	sys.exit()
   
-class cpu(threading.Thread):
+class tcpu(threading.Thread):
 	def __init__(self, timesleep):
 		threading.Thread.__init__(self)
 		self.cpum = ""
@@ -25,7 +25,7 @@ class cpu(threading.Thread):
 
 	def cpu_usage(self, interval=1):
 		# load average, uptime
-		uptime = datetime.now() - datetime.fromtimestamp(psutil.boot_time())
+		uptime = datetime.datetime.now() - datetime.datetime.fromtimestamp(psutil.boot_time())
 		cpu = str(psutil.cpu_percent(interval))+"%"
 		return "Cpu(s):%s Up:%s" \
 			% (cpu, str(uptime).split('.')[0])	

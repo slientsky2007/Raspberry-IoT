@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+import fcntl
+import struct
 import os
 import socket
 import sys
 import time
-from BASICDEF import bytes2human
+import datetime
+from BASICDEF import basic
 
 try:
 	import psutil
@@ -14,20 +17,20 @@ except ImportError:
 class system():
 	def __init__(self, iface):
 		self.IFACE_INIT = iface
-		self.SEND_INIT = ""
-		self.RECV_INIT = ""
+		self.SEND_INIT = 0
+		self.RECV_INIT = 0
 
 	def get_RT_network_traffic(self, timesleep):
-		new_recv,new_send = self.get_net_TxRx(self.IFACE_INIT)
-		recv_data = bytes2human((new_recv - self.RECV_INIT)/timesleep)
-		send_data = bytes2human((new_send - self.SEND_INIT)/timesleep)
+		new_recv,new_send = self.get_net_TxRx()
+		recv_data = basic.bytes2human((new_recv - self.RECV_INIT)/timesleep)
+		send_data = basic.bytes2human((new_send - self.SEND_INIT)/timesleep)
 		self.RECV_INIT = new_recv
 		self.SEND_INIT = new_send
 		return "Tx %s,  Rx %s" % \
 				(send_data, recv_data)
 
 	def get_net_TxRx(self):
-		stat = psutil.net_io_counters(pernic=True)[self.iface]
+		stat = psutil.net_io_counters(pernic=True)[self.IFACE_INIT]
 		send = stat.bytes_sent
 		recv = stat.bytes_recv
 		return (recv, send)
@@ -35,18 +38,18 @@ class system():
 	def get_mem_usage(self):
 		usage = psutil.virtual_memory()
 		return "Mem: %s %.0f%% %s free" \
-			% (bytes2human(usage.total), usage.percent, bytes2human(usage.free))
+			% (basic.bytes2human(usage.total), usage.percent, basic.bytes2human(usage.free))
 					
 	def getDate(self):
-		dt = datetime.now()
+		dt = datetime.datetime.now()
 		return dt.strftime( '%Y-%m-%d' )
 
 	def getTime(self):
-		dt = datetime.now()
+		dt = datetime.datetime.now()
 		return dt.strftime( '%H:%M:%S %p' )
 
 	def getDateTime(self):
-		dt = datetime.now()
+		dt = datetime.datetime.now()
 		return dt.strftime( '%x %H:%M:%S %p' )
 
 	  
