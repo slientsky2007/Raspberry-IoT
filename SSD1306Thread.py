@@ -43,12 +43,17 @@ class tssd1306(threading.Thread):
 			self.stats()
 			time.sleep(self.timesleep)
 
+	def special_stats(self, x, y, message):
+		with canvas(self.oled) as draw:
+			if self.welcomemessage == "":
+				draw.text((x, y), message, fill="white")
+			
 	def stats(self):
 		x = self.x
 		y = self.y
 		with canvas(self.oled) as draw:
 			if self.welcomemessage == "":
-				draw.text((x, y), self.datem, fill="white")
+				draw.text((x, y), self.getDateTime(), fill="white")
 				draw.text((x, y+10), self.cpum, font=self.font2, fill="white")
 				draw.text((x, y+20), self.memm, font=self.font2, fill="white")
 				draw.text((x, y+30), self.ipadd, font=self.font2, fill="white")
@@ -72,4 +77,8 @@ class tssd1306(threading.Thread):
 	#设置开屏信息
 	def set_welcomemessage(self, welcomemessage):
 		self.welcomemessage = welcomemessage
-		
+	
+	#屏幕子线程中直接读取时间信息显示
+	def getDateTime(self):
+		dt = datetime.datetime.now()
+		return dt.strftime( '%x %H:%M:%S %p' )

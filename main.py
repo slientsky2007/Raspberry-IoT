@@ -59,7 +59,9 @@ def main():
 			signal.alarm(timesleep)
 			
 			#系统基础信息
-			datem = str(systeminfo.getDateTime())
+			#(由于使用子线程异步读取数据，故存在时间差，
+			#为了时间显示比较正常，将时间获取放在绘制屏幕子线程中执行)
+			# datem = str(systeminfo.getDateTime())			
 			memm = systeminfo.get_mem_usage()
 			ipadd = "Wlan0: " + systeminfo.getIP()
 			netm = systeminfo.get_RT_network_traffic(timesleep)
