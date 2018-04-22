@@ -10,6 +10,7 @@ from SYSTEMINFO import system
 from CPUThread import tcpu
 from DHT22Thread import tdht22
 from SSD1306Thread import tssd1306
+from BUTTONDEF import tbutton
 	
 def main():
 
@@ -43,6 +44,10 @@ def main():
 	dht22thread.start()
 	cputhread.start()
 	ssd1306thread.start()
+	
+	#按键操作
+	button_1 = tbutton(23, ssd1306thread)
+	button_1.start()
 	
 	while True:
 		#每次刷新数据间隔时间
