@@ -38,8 +38,17 @@ class tssd1306(threading.Thread):
 		self.memm = ""
 		self.ipadd = ""
 		self.netm = ""
-		self.thm = ""
 		self.welcomemessage = "Hi SlientSky"
+		
+		self.thm = ''
+		self.apm10 = ''
+		self.apm25 = ''
+		self.pm10 = ''
+		self.pm25 = ''
+		self.gt03um = ''
+		self.gt05um = ''
+		self.gt10um = ''
+		self.gt25um = ''
 	
 	def run(self):
 		try:
@@ -62,15 +71,22 @@ class tssd1306(threading.Thread):
 				draw.text((30, 25), self.welcomemessage, fill="white")
 				time.sleep(self.welcometimesleep)
 				self.display = 1
+				
 			elif self.display == 1:
 				draw.text((x, y), self.getDateTime(), fill="white")
 				draw.text((x, y+10), self.cpum, font=self.font2, fill="white")
 				draw.text((x, y+20), self.memm, font=self.font2, fill="white")
 				draw.text((x, y+30), self.ipadd, font=self.font2, fill="white")
 				draw.text((x, y+40), self.netm, font=self.font2, fill="white")
-				# draw.text((x, y+50), self.thm, font=self.font2, fill="white")
+				
 			elif self.display == 2:
-				draw.text((x, y), self.thm, font=self.font2, fill="white")			
+				draw.text((x, y), self.thm, font=self.font2, fill="white")
+				draw.text((x, y+10), self.apm25, font=self.font2, fill="white")
+				draw.text((x, y+20), self.pm10, font=self.font2, fill="white")
+				draw.text((x, y+30), self.pm25, font=self.font2, fill="white")
+				draw.text((x, y+40), self.gt03um, font=self.font2, fill="white")
+				draw.text((x, y+50), self.gt05um, font=self.font2, fill="white")
+				
 			elif self.display == 3:
 				self.count -=1
 				message = "python will close: " + str(self.count)
@@ -84,15 +100,29 @@ class tssd1306(threading.Thread):
 				message = "system will halt in: " + str(self.count)
 				draw.text((10, 25), message, font=self.font2, fill="white")				
 	
-	def set_display(self, x, y, datem, cpum, memm, ipadd, netm, thm):
+	def set_display_1(self, x, y, cpum, memm, ipadd, netm):
 		self.x = x
 		self.y = y
-		self.datem = datem
 		self.cpum = cpum
 		self.memm = memm
 		self.ipadd = ipadd
 		self.netm = netm
-		self.thm = thm
+		
+	def set_display_2(self, x, y, humidity, temperature, apm10, apm25, pm25, pm10, gt03um, gt05um, gt10um, gt25um):
+		self.x = x
+		self.y = y
+		T = str(temperature) + '%'
+		H = str(humidity) + u'°C'
+		self.thm = "T&H: %s | %s" % \
+				(T, H)
+		self.apm10 = 'apm2.5: %sug/m^3'%(str(apm25))
+		self.apm25 = 'apm2.5: %sug/m^3'%(str(apm25))
+		self.pm10 = 'pm1.0: %sug/m^3'%(str(pm10))
+		self.pm25 = 'pm2.5: %sug/m^3'%(str(pm25))
+		self.gt03um = 'gt0.3um: %s/0.1L^3'%(str(gt03um))
+		self.gt05um = 'gt0.5um: %s/0.1L^3'%(str(gt05um))
+		self.gt10um = 'gt1.0um: %s/0.1L^3'%(str(gt10um))
+		self.gt25um = 'gt2.5um: %s/0.1L^3'%(str(gt25um))
 
 	#设置开屏信息
 	def set_welcomemessage(self, welcomemessage):

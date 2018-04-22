@@ -63,8 +63,8 @@ class tbutton(threading.Thread):
 				time.sleep(self.timesleep)
 		except KeyboardInterrupt:
 			raise
-		finally:
-			self.cleanup()
+		# finally:
+			# self.cleanup()
 			
 	def cleanup(self):
 		'''释放资源，不然下次运行是可能会收到警告
