@@ -15,6 +15,8 @@ class pmsa003(threading.Thread):
 		self.pm_device = '/dev/ttyUSB0'
 		self.open_pm_port()
 		
+		self.timestamp = ""
+		
 		self.apm10 = ""
 		self.apm25 = ""
 		self.apm100 = ""
@@ -37,6 +39,7 @@ class pmsa003(threading.Thread):
 			if self.pm_res == False:
 				continue
 
+			self.timestamp = self.pm_res['timestamp']
 			self.apm10 = str(self.pm_res['apm10'])
 			self.apm25 = str(self.pm_res['apm25'])
 			self.apm100 = str(self.pm_res['apm100'])
@@ -72,7 +75,7 @@ class pmsa003(threading.Thread):
 		rcv = self.read_pm_line()
 		# print(rcv)
 		if sum(rcv[:-2]) == rcv[-2] * 256 + rcv[-1]:
-			res = {'timestamp': datetime.datetime.now(),
+			res = {'timestamp': self.getDateTime(),
 					'apm10': rcv[4] * 256 + rcv[5],
 					'apm25': rcv[6] * 256 + rcv[7],
 					'apm100': rcv[8] * 256 + rcv[9],
@@ -92,6 +95,10 @@ class pmsa003(threading.Thread):
 	#传感器XX数据校验，将偏差值较大数据丢弃
 	def checkT():
 		return ""
+	
+	def getDateTime(self):
+		dt = datetime.datetime.now()
+		return dt.strftime( '%x %H:%M:%S %p' )
 		
 def main():
 	pmsa003thread = pmsa003()
@@ -102,8 +109,8 @@ def main():
 		if pmsa003thread.pm_res == False:
 			continue
 
-		pmmessage = "apm2.5: %sug/m^3, apm1.0: %sug/m^3, apm10: %sug/m^3, pm2.5: %sug/m^3, pm1.0: %sug/m^3, pm10: %sug/m^3, gt0.3um: %sn/0.1L^3, gt0.5um: %sn/0.1L^3, gt1.0um: %sn/0.1L^3, gt2.5um: %sn/0.1L^3, gt5.0um: %sn/0.1L^3, gt10um: %sn/0.1L^3" % \
-			(pmsa003thread.apm25, pmsa003thread.apm10, pmsa003thread.apm100, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.pm100, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um, pmsa003thread.gt50um, pmsa003thread.gt100um)
+		pmmessage = "%s, apm2.5: %sug/m^3, pm2.5: %sug/m^3, pm1.0: %sug/m^3, gt0.3um: %sn/0.1L^3, gt0.5um: %sn/0.1L^3, gt1.0um: %sn/0.1L^3, gt2.5um: %sn/0.1L^3" % \
+			(pmsa003thread.timestamp, pmsa003thread.apm25, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um)
 		print(pmmessage)
 		# print("apm2.5: " + pmsa003thread.apm25 + "ug/m^3")
 		# print("apm1.0: " + pmsa003thread.apm10 + "ug/m^3")
@@ -117,7 +124,6 @@ def main():
 		# print("gt2.5um: " + pmsa003thread.gt25um + "n/0.1L^3")
 		# print("gt5.0um: " + pmsa003thread.gt50um + "n/0.1L^3")
 		# print("gt10um: " + pmsa003thread.gt100um + "n/0.1L^3")
-		print("--------------------------------")
 		
 
 if __name__ == "__main__":
