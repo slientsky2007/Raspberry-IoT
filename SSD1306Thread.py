@@ -41,6 +41,7 @@ class tssd1306(threading.Thread):
 		self.welcomemessage = "Hi SlientSky"
 		
 		self.thm = ''
+		self.co2 = ''
 		self.apm10 = ''
 		self.apm25 = ''
 		self.pm10 = ''
@@ -81,11 +82,11 @@ class tssd1306(threading.Thread):
 				
 			elif self.display == 2:
 				draw.text((x, y), self.thm, font=self.font2, fill="white")
-				draw.text((x, y+10), self.apm25, font=self.font2, fill="white")
-				draw.text((x, y+20), self.pm10, font=self.font2, fill="white")
-				draw.text((x, y+30), self.pm25, font=self.font2, fill="white")
-				draw.text((x, y+40), self.gt03um, font=self.font2, fill="white")
-				draw.text((x, y+50), self.gt05um, font=self.font2, fill="white")
+				draw.text((x, y+10), "CO2: ", font=self.font2, fill="white")
+				draw.text((x, y+20), self.apm25, font=self.font2, fill="white")
+				draw.text((x, y+30), self.pm10, font=self.font2, fill="white")
+				draw.text((x, y+40), self.pm25, font=self.font2, fill="white")
+				draw.text((x, y+50), self.gt03um, font=self.font2, fill="white")
 				
 			elif self.display == 3:
 				self.count -=1
@@ -115,7 +116,7 @@ class tssd1306(threading.Thread):
 		H = str(humidity) + u'°C'
 		self.thm = "T&H: %s | %s" % \
 				(T, H)
-		self.apm10 = 'apm2.5: %sug/m^3'%(str(apm25))
+		self.apm10 = 'apm1.0: %sug/m^3'%(str(apm10))
 		self.apm25 = 'apm2.5: %sug/m^3'%(str(apm25))
 		self.pm10 = 'pm1.0: %sug/m^3'%(str(pm10))
 		self.pm25 = 'pm2.5: %sug/m^3'%(str(pm25))
