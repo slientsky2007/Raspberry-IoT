@@ -17,13 +17,19 @@ except ImportError:
 class system():
 	def __init__(self, iface):
 		self.IFACE_INIT = iface
+		#上一次时间间隔时网络发送总流量和接受总流量
 		self.SEND_INIT = 0
 		self.RECV_INIT = 0
+		#当前时间间隔内的发送和接受流量(计算得到的实时网络流量)
+		self.Rx = 0
+		self.Tx = 0
 
 	def get_RT_network_traffic(self, timesleep):
 		new_recv,new_send = self.get_net_TxRx()
-		recv_data = basic.bytes2human((new_recv - self.RECV_INIT)/timesleep)
-		send_data = basic.bytes2human((new_send - self.SEND_INIT)/timesleep)
+		self.Rx = (new_recv - self.RECV_INIT)/timesleep
+		self.Tx = (new_send - self.SEND_INIT)/timesleep
+		recv_data = basic.bytes2human(Rx)
+		send_data = basic.bytes2human(Tx)
 		self.RECV_INIT = new_recv
 		self.SEND_INIT = new_send
 		return "Tx %s,  Rx %s" % \
