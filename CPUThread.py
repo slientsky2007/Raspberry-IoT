@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import datetime
+from OneNetAPI import onenet
 
 try:
 	import psutil
@@ -17,6 +18,8 @@ class tcpu(threading.Thread):
 		self.cpum = ""
 		self.cputimesleep = 1
 		self.timesleep = timesleep
+		
+		self.onenet = onenet()
 	
 	def run(self):
 		while True:
@@ -26,8 +29,13 @@ class tcpu(threading.Thread):
 	def cpu_usage(self, interval=1):
 		# load average, uptime
 		uptime = datetime.datetime.now() - datetime.datetime.fromtimestamp(psutil.boot_time())
-		cpu = str(psutil.cpu_percent(interval))+"%"
+		cpu = psutil.cpu_percent(interval)
+		self.onenet.num += 1
+		if self.onenet.num >= 10:
+			self.onenet.set("CPU", cpu)
+			r = self.onenet.post()
+			self.onenet.num = 0
 		return "Cpu(s):%s Up:%s" \
-			% (cpu, str(uptime).split('.')[0])	
+			% (str(cpu)+'%', str(uptime).split('.')[0])	
 		
 		

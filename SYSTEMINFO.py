@@ -7,6 +7,7 @@ import sys
 import time
 import datetime
 from BASICDEF import basic
+from OneNetAPI import onenet
 
 try:
 	import psutil
@@ -23,11 +24,23 @@ class system():
 		#当前时间间隔内的发送和接受流量(计算得到的实时网络流量)
 		self.Rx = 0
 		self.Tx = 0
+		
+		self.onenet = onenet()
 
 	def get_RT_network_traffic(self, timesleep):
 		new_recv,new_send = self.get_net_TxRx()
 		self.Rx = (new_recv - self.RECV_INIT)/timesleep
 		self.Tx = (new_send - self.SEND_INIT)/timesleep
+		
+		self.onenet.num +=1
+		if self.onenet.num >= 10:
+			self.onenet.set("NetTx", self.Tx)
+			r1 = self.onenet.post()
+
+			self.onenet.set("NetRx", self.Rx)
+			r2 = self.onenet.post()	
+			self.onenet.num = 0
+		
 		recv_data = basic.bytes2human(self.Rx)
 		send_data = basic.bytes2human(self.Tx)
 		self.RECV_INIT = new_recv

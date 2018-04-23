@@ -28,17 +28,17 @@ class tbutton(threading.Thread):
 		elif self.press_time==2:
 			self.oled.display = 2
 		elif self.press_time==3:
-			print('python will close in %s'%(self.count_down))
+			# print('python will close in %s'%(self.count_down))
 			self.count_down=10
 			self.oled.count = 10
 			self.oled.display = 3
 		elif self.press_time==4:
-			print('system will restart in %s'%(self.count_down))
+			# print('system will restart in %s'%(self.count_down))
 			self.count_down=10
 			self.oled.count = 10
 			self.oled.display = 4
 		elif self.press_time==5:
-			print('system will halt in %s'%(self.count_down))
+			# print('system will halt in %s'%(self.count_down))
 			self.count_down=10
 			self.oled.count = 10
 			self.oled.display = 5
