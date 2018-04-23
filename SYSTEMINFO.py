@@ -28,8 +28,8 @@ class system():
 		new_recv,new_send = self.get_net_TxRx()
 		self.Rx = (new_recv - self.RECV_INIT)/timesleep
 		self.Tx = (new_send - self.SEND_INIT)/timesleep
-		recv_data = basic.bytes2human(Rx)
-		send_data = basic.bytes2human(Tx)
+		recv_data = basic.bytes2human(self.Rx)
+		send_data = basic.bytes2human(self.Tx)
 		self.RECV_INIT = new_recv
 		self.SEND_INIT = new_send
 		return "Tx %s,  Rx %s" % \

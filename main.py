@@ -41,6 +41,7 @@ def main():
 	dht22thread = tdht22(24)
 	#初始化Pm传感器，为了读数准确，传感器需要预热30秒时间
 	pmsa003thread = tpmsa003('/dev/ttyUSB0')
+
 	#初始化OLED
 	ssd1306thread = tssd1306()
 	#因为cpu信息读取时导致阻塞比较奇怪，故抽取出来另起子线程，避免阻塞主线程
@@ -49,14 +50,16 @@ def main():
 	systeminfo = system(wlanname)
 
 	#先初始化硬件设备，启动子线程
-	pmsa003thread.start()
-	dht22thread.start()
 	cputhread.start()
 	ssd1306thread.start()
 	
 	#按键操作
 	button_1 = tbutton(23, ssd1306thread)
 	button_1.start()
+	
+	pmsa003thread.start()
+	dht22thread.start()
+
 	
 	while True:
 		#每次刷新数据间隔时间

@@ -22,8 +22,6 @@ class tdht22(threading.Thread):
 		while True:
 			time.sleep(self.timesleep)
 			thm = self.getTH()
-			# if thm == False:
-				# continue
 
 	def getTH(self):
 		humidity, temperature = Adafruit_DHT.read_retry(self.sensor, self.pin)#24 是 GPIO 的引脚编号

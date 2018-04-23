@@ -13,26 +13,32 @@ class tpmsa003(threading.Thread):
 		self.timesleep = timesleep
 		#usb口转UART CH340
 		self.pm_device = usbdevice
-		self.open_pm_port()
-		
+			
 		self.timestamp = ""
 		
-		self.apm10 = ""
-		self.apm25 = ""
-		self.apm100 = ""
-		self.pm25 = ""
-		self.pm10 = ""
-		self.pm100 = ""
-		self.gt03um = ""
-		self.gt05um = ""
-		self.gt10um = ""
-		self.gt25um = ""
-		self.gt50um = ""
-		self.gt100um = ""
+		self.apm10 = 0
+		self.apm25 = 0
+		self.apm100 = 0
+		self.pm25 = 0
+		self.pm10 = 0
+		self.pm100 = 0
+		self.gt03um = 0
+		self.gt05um = 0
+		self.gt10um = 0
+		self.gt25um = 0
+		self.gt50um = 0
+		self.gt100um = 0
 		
 		self.pm_res = False
+		self.is_device = True
 	
 	def run(self):
+		#初始化pm传感器失败时
+		try:
+			self.open_pm_port()
+		except OSError:
+			self.is_device = False
+			return self.is_device
 		while True:
 			time.sleep(self.timesleep)
 			self.pm_res = self.get_pm_data()
