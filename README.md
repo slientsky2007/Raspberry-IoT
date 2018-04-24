@@ -29,8 +29,21 @@ sudo -H pip3 install --upgrade luma.oled
 sudo -H pip3 install pyserial
 ```
 
-## 运行程序
+## 需要上传数据到onenet平台时
+## 新增配置文件onenet.conf,填写onenet上对应的设备号和apikey
+```sh
+{  
+	"Raspberry0":  
+	{     
+		"deviceid":"********",
+		"apikey":"********************"
+	} 
+} 
+```
+
+## 运行程序,参数onenet.conf  和 --device=Raspberry0  请根据你的配置文件修改
 ```sh
 cd Rasyberry-IoT
-python3 main.py
+python3 main.py onene.conf --device=Raspberry0
 ```
+

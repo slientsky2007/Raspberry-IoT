@@ -18,13 +18,16 @@ import requests
 import json
 import sys
 import random
+
+from BASICDEF import basic
+
 defaultencoding = 'utf-8'
 if sys.getdefaultencoding() != defaultencoding:
 	reload(sys)
 	sys.setdefaultencoding(defaultencoding)
 
 class onenet():
-	def __init__(self, deviceid='29577383', apikey='QzCP2X7dyYVCg=loObHOt6L6hQ8='):
+	def __init__(self, deviceid, apikey):
 		# 设备ID
 		self.DEVICEID = deviceid
 		# 数据流名称
@@ -63,19 +66,23 @@ class onenet():
 		return r
 
 
-def main():
-	DEVICEID = '29577383'
-	APIKEY = 'QzCP2X7dyYVCg=loObHOt6L6hQ8='
-
-	rPi = onenet(DEVICEID, APIKEY)
+def main(argv):
+	args = basic.parse_args(argv[1:])
+	print('args: ', args)
+	config = basic.parse(args.configfile[0])
+	info = config[args.device]
+	_deviceid = info['deviceid']
+	_apikey = info['apikey']
+	# print('_deviceid: ', _deviceid)
+	# print('_apikey: ', _apikey)
+	rPi = onenet(_deviceid, _apikey)
 	num = 0
 
 	while True:
-		# VALUE = 100
-		if num < 10:
+		if num < 1:
 			rPi.set("Test1", random.randint(1, 100))
 			rPi.set("Test2", random.randint(1, 100))
-			# print(rPi.dict)
+			print(rPi.dict)
 			r = rPi.post()
 			num +=1
 			print(r.headers)
@@ -87,6 +94,6 @@ def main():
 
 if __name__ == "__main__":
 	try:
-		main()
+		main(sys.argv)
 	except KeyboardInterrupt:
 		pass
