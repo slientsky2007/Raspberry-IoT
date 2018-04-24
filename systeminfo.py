@@ -15,7 +15,7 @@ except ImportError:
 	print("The psutil library was not found. Run 'sudo -H pip install psutil' to install it.")
 	sys.exit()
 
-class system():
+class SystemInfo():
 	def __init__(self, iface, post2OneNet):
 		self.IFACE_INIT = iface
 		#上一次时间间隔时网络发送总流量和接受总流量

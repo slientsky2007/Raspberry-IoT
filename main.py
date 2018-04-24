@@ -6,13 +6,13 @@ import time
 import signal
 
 #自定义类
-from SYSTEMINFO import system
 from CPUThread import tcpu
-from BUTTONDEF import tbutton
+from ButtonThread import tbutton
 from DHT22Thread import tdht22
 from SSD1306Thread import tssd1306
 from PMSA003Thread import tpmsa003
 
+from systeminfo import SystemInfo
 from basicdef import BasicDef
 
 def main(argv):
@@ -62,7 +62,7 @@ def main(argv):
 	#因为cpu信息读取时导致阻塞比较奇怪，故抽取出来另起子线程，避免阻塞主线程
 	cputhread = tcpu(timesleep, post2OneNet)
 	#创建systeminfo对象，读取系统基础信息
-	systeminfo = system(wlanname, post2OneNet)
+	systeminfo = SystemInfo(wlanname, post2OneNet)
 
 	#按键操作
 	button_1 = tbutton(23, ssd1306thread)
