@@ -17,71 +17,76 @@ import time
 import requests
 import json
 import sys
+import random
 defaultencoding = 'utf-8'
 if sys.getdefaultencoding() != defaultencoding:
-    reload(sys)
-    sys.setdefaultencoding(defaultencoding)
+	reload(sys)
+	sys.setdefaultencoding(defaultencoding)
 
 class onenet():
-    def __init__(self, deviceid, apikey):
-        # 设备ID
-        self.DEVICEID = deviceid
-        # 数据流名称
-        self.SENSORID = ''
-        # 数值
-        self.VALUE = 0
-        # APIKEY
-        self.APIKEY = apikey
+	def __init__(self, deviceid='29577383', apikey='QzCP2X7dyYVCg=loObHOt6L6hQ8='):
+		# 设备ID
+		self.DEVICEID = deviceid
+		# 数据流名称
+		self.SENSORID = ''
+		# 数值
+		self.VALUE = 0
+		# APIKEY
+		self.APIKEY = apikey
+		
+		self.num = 0
+		self.dict = {"datastreams": []}
 
-    def set(self, sensorid, value):
-        self.SENSORID = sensorid
-        self.VALUE = value
+	def set(self, sensorid, value):
+		self.SENSORID = sensorid
+		self.VALUE = value
+		
+		d = {"id": "TEMP", "datapoints": [{"value": 50}]}
+		d['id'] = self.SENSORID
+		d['datapoints'][0]['value'] = self.VALUE
+		self.dict['datastreams'].append(d)
 
-    def post(self):
-        # dt = datetime.datetime.now()
-        # date = dt.strftime( '%x %H:%M:%S %p' )
-        url = 'http://api.heclouds.com/devices/%s/datapoints' % (self.DEVICEID)
-        dict = {"datastreams": [{"id": "TEMP", "datapoints": [{"value": 50}]}]}
-        dict['datastreams'][0]['id'] = self.SENSORID
-        dict['datastreams'][0]['datapoints'][0]['value'] = self.VALUE
-
-        s = json.dumps(dict)
-        headers = {
-            "api-key": self.APIKEY,
-            "Connection": "close",
-            # "Date": date
-        }
-        try:
-            r = requests.post(url, headers = headers, data = s)
-        except RequestException:
-            return False
-
-        return r
+	def post(self):
+		url = 'http://api.heclouds.com/devices/%s/datapoints' % (self.DEVICEID)
+		s = json.dumps(self.dict)
+		headers = {
+			"api-key": self.APIKEY,
+			"Connection": "close",
+		}
+		try:
+			r = requests.post(url, headers = headers, data = s)
+		except requests.RequestException:
+			return False
+		finally:
+			self.dict = {"datastreams": []}
+		# print(r.text)
+		return r
 
 
 def main():
-    DEVICEID = '29577383'
-    SENSORID = 'Test'
-    VALUE = 50
-    APIKEY = 'QzCP2X7dyYVCg=loObHOt6L6hQ8='
+	DEVICEID = '29577383'
+	APIKEY = 'QzCP2X7dyYVCg=loObHOt6L6hQ8='
 
-    rPi = onenet(DEVICEID, APIKEY)
+	rPi = onenet(DEVICEID, APIKEY)
+	num = 0
 
-    while True:
-        VALUE += 5
-        if VALUE < 55:
-            rPi.set(SENSORID, VALUE)
-            r = rPi.post()
-
-            print(r.headers)
-            print('1',20 * '*')
-            print(r.text)
-            print('2',20 * '*')
-            time.sleep(5)
-        else:break
+	while True:
+		# VALUE = 100
+		if num < 10:
+			rPi.set("Test1", random.randint(1, 100))
+			rPi.set("Test2", random.randint(1, 100))
+			# print(rPi.dict)
+			r = rPi.post()
+			num +=1
+			print(r.headers)
+			print('1',20 * '*')
+			print(r.text)
+			print('2',20 * '*')
+			time.sleep(5)
+		else:break
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+	try:
+		main()
+	except KeyboardInterrupt:
+		pass

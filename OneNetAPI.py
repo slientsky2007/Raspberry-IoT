@@ -34,57 +34,29 @@ class onenet():
 		self.APIKEY = apikey
 		
 		self.num = 0
+		self.dict = {"datastreams": []}
 
 	def set(self, sensorid, value):
 		self.SENSORID = sensorid
 		self.VALUE = value
+		
+		d = {"id": "TEMP", "datapoints": [{"value": 50}]}
+		d['id'] = self.SENSORID
+		d['datapoints'][0]['value'] = self.VALUE
+		self.dict['datastreams'].append(d)
 
 	def post(self):
-		# dt = datetime.datetime.now()
-		# date = dt.strftime( '%x %H:%M:%S %p' )
 		url = 'http://api.heclouds.com/devices/%s/datapoints' % (self.DEVICEID)
-		dict = {"datastreams": [{"id": "TEMP", "datapoints": [{"value": 50}]}]}
-		dict['datastreams'][0]['id'] = self.SENSORID
-		dict['datastreams'][0]['datapoints'][0]['value'] = self.VALUE
-
-		s = json.dumps(dict)
+		s = json.dumps(self.dict)
 		headers = {
 			"api-key": self.APIKEY,
 			"Connection": "close",
-			# "Date": date
 		}
 		try:
 			r = requests.post(url, headers = headers, data = s)
 		except requests.RequestException:
 			return False
-			
+		finally:
+			self.dict = {"datastreams": []}
 		# print(r.text)
 		return r
-
-
-# def main():
-    # DEVICEID = '29577383'
-    # SENSORID = 'Test'
-    # VALUE = 50
-    # APIKEY = 'QzCP2X7dyYVCg=loObHOt6L6hQ8='
-
-    # rPi = onenet(DEVICEID, APIKEY)
-
-    # while True:
-        # VALUE += 5
-        # if VALUE < 55:
-            # rPi.set(SENSORID, VALUE)
-            # r = rPi.post()
-
-            # print(r.headers)
-            # print('1',20 * '*')
-            # print(r.text)
-            # print('2',20 * '*')
-            # time.sleep(5)
-        # else:break
-
-# if __name__ == "__main__":
-    # try:
-        # main()
-    # except KeyboardInterrupt:
-        # pass
