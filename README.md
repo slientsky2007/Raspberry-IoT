@@ -41,9 +41,13 @@ sudo -H pip3 install pyserial
 } 
 ```
 
-## 运行程序,参数onenet.conf  和 --device=Raspberry0  请根据你的配置文件修改
+## 运行程序,如果使用参数onenet.conf --device=Raspberry0（参数定义请根据你的需求修改），可上传数据到onenet平台
 ```sh
 cd Rasyberry-IoT
 python3 main.py onene.conf --device=Raspberry0
+-----------------------------------------------
+#不添加参数，只显示，不上传数据
+python3 main.py
 ```
+
 
