@@ -1,7 +1,17 @@
 #!/usr/bin/env python3
-# import datetime
-# import os
-# import sys
+# -*- coding: utf-8 -*-
+"""
+-------------------------------------------------
+   File Name：    main
+   Description :  主线程启动
+   Author :       Slientsky
+   date：         2018-04-23
+-------------------------------------------------
+   Change Activity:
+                   2018-04-23
+-------------------------------------------------
+"""
+
 import time
 import signal
 

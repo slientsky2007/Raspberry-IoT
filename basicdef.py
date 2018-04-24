@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+-------------------------------------------------
+   File Name：    basicdef
+   Description :  常用方法
+   Author :       Slientsky
+   date：         2018-04-23
+-------------------------------------------------
+   Change Activity:
+                   2018-04-23
+-------------------------------------------------
+"""
 
 import time, os
 import json, argparse, sys

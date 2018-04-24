@@ -3,10 +3,10 @@
 # -*- coding: utf-8 -*-
 """
 -------------------------------------------------
-   File Name：     onenetPostTest
-   Description :
+   File Name：    onenetapi
+   Description :  OneNet平台操作处理
    Author :       Slientsky
-   date：          2018-04-23
+   date：         2018-04-23
 -------------------------------------------------
    Change Activity:
                    2018-04-23
@@ -26,7 +26,7 @@ if sys.getdefaultencoding() != defaultencoding:
 	reload(sys)
 	sys.setdefaultencoding(defaultencoding)
 
-class onenet():
+class OneNetApi():
 	def __init__(self):
 		# 设备ID
 		self.DEVICEID = BasicDef.get_device_id()

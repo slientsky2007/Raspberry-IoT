@@ -1,4 +1,17 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+-------------------------------------------------
+   File Name：    systeminfo
+   Description :  获取系统基础信息
+   Author :       Slientsky
+   date：         2018-04-23
+-------------------------------------------------
+   Change Activity:
+                   2018-04-23
+-------------------------------------------------
+"""
+
 import fcntl
 import struct
 import os
@@ -6,8 +19,9 @@ import socket
 import sys
 import time
 import datetime
+
 from basicdef import BasicDef
-from OneNetAPI import onenet
+from onenetapi import OneNetApi
 
 try:
 	import psutil
@@ -27,7 +41,7 @@ class SystemInfo():
 		
 		self.post2OneNet = post2OneNet
 		if post2OneNet:
-			self.onenet = onenet()
+			self.onenet = OneNetApi()
 		
 
 	def get_RT_network_traffic(self, timesleep):

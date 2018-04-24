@@ -1,3 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+-------------------------------------------------
+   File Name：    SSD1306Thread
+   Description :  子线程，控制屏幕显示
+   Author :       Slientsky
+   date：         2018-04-23
+-------------------------------------------------
+   Change Activity:
+                   2018-04-23
+-------------------------------------------------
+"""
+
 import threading
 import os
 import sys

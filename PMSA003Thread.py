@@ -1,4 +1,17 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+-------------------------------------------------
+   File Name：    PMSA003Thread
+   Description :  子线程，获取pm传感器数据
+   Author :       Slientsky
+   date：         2018-04-23
+-------------------------------------------------
+   Change Activity:
+                   2018-04-23
+-------------------------------------------------
+"""
+
 import threading
 import os
 import sys

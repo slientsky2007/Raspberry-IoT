@@ -1,10 +1,24 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+-------------------------------------------------
+   File Name：    CPUThread
+   Description :  子线程，获取CPU信息
+   Author :       Slientsky
+   date：         2018-04-23
+-------------------------------------------------
+   Change Activity:
+                   2018-04-23
+-------------------------------------------------
+"""
+
 import threading
 import os
 import sys
 import time
 import datetime
-from OneNetAPI import onenet
+
+from onenetapi import OneNetApi
 
 try:
 	import psutil
@@ -19,7 +33,7 @@ class tcpu(threading.Thread):
 		self.cputimesleep = 1
 		self.timesleep = timesleep
 		
-		self.onenet = onenet()
+		self.onenet = OneNetApi()
 		self.post2OneNet = post2OneNet
 	
 	def run(self):
