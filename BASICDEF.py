@@ -1,9 +1,24 @@
 #!/usr/bin/env python3
 
-import sys, time, os
+import time, os
+import json, argparse, sys
 
-class basic():
-
+class BasicDef():
+	deviceid = None
+	apikey = None
+	
+	def set_device_id(value):
+		BasicDef.deviceid = value
+	
+	def set_apikey(value):
+		BasicDef.apikey = value
+	
+	def get_device_id():
+		return BasicDef.deviceid
+	
+	def get_apikey():
+		return BasicDef.apikey
+	
 	@staticmethod
 	def bytes2human(n):
 		"""
@@ -21,3 +36,25 @@ class basic():
 				value = int(float(n) / prefix[s])
 				return '%s%s' % (value, s)
 		return "%sB" % n
+
+	def get_pares_info(argv, key, int=0):
+		args = parse_args(argv[1:])
+		# print('args: ', args)
+		config = parse(args.configfile[int])
+		print()
+		info = config[args.device]
+		value = info[key]
+		return value
+		
+def parse_args(args):  
+	parser = argparse.ArgumentParser(prog="OneNetServer")  
+	parser.add_argument('configfile', nargs=1, type=str, help='')  
+	parser.add_argument('--device', default="device", type=str, help='')  
+	return parser.parse_args(args)  
+  
+def parse(filename):  
+	configfile = open(filename)  
+	jsonconfig = json.load(configfile)  
+	configfile.close()  
+	return jsonconfig
+

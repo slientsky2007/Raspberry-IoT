@@ -13,13 +13,14 @@ except ImportError:
 	sys.exit()
   
 class tcpu(threading.Thread):
-	def __init__(self, timesleep):
+	def __init__(self, timesleep, post2OneNet):
 		threading.Thread.__init__(self)
 		self.cpum = ""
 		self.cputimesleep = 1
 		self.timesleep = timesleep
 		
 		self.onenet = onenet()
+		self.post2OneNet = post2OneNet
 	
 	def run(self):
 		while True:
@@ -30,11 +31,14 @@ class tcpu(threading.Thread):
 		# load average, uptime
 		uptime = datetime.datetime.now() - datetime.datetime.fromtimestamp(psutil.boot_time())
 		cpu = psutil.cpu_percent(interval)
-		self.onenet.num += 1
-		if self.onenet.num >= 10:
-			self.onenet.set("CPU", cpu)
-			r = self.onenet.post()
-			self.onenet.num = 0
+		
+		if self.post2OneNet:
+			self.onenet.num += 1
+			if self.onenet.num >= 10:
+				self.onenet.set("CPU", cpu)
+				r = self.onenet.post_data_flow()
+				self.onenet.num = 0
+
 		return "Cpu(s):%s Up:%s" \
 			% (str(cpu)+'%', str(uptime).split('.')[0])	
 		

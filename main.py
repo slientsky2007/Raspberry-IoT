@@ -13,8 +13,31 @@ from DHT22Thread import tdht22
 from SSD1306Thread import tssd1306
 from PMSA003Thread import tpmsa003
 
-def main():
+from basicdef import BasicDef
 
+def main(argv):
+	#是否上传数据到OneNet平台
+	post2OneNet = False
+	#检查参数是否存在
+	if argv[1:] == []:
+		print("Parameters Not exsit! Data won't post to OnetNet")
+	#检查配置文件是否存在;
+	elif (os.path.isfile(argv[1]) == False):
+		print("file: "+ argv[1] + " not exist! Data won't post to OneNet")
+	else:
+		#检查配置文件中参数是否正确
+		try:
+			_deviceid = basic.get_pares_info(argv, 'deviceid')
+			# print('_deviceid: ', _deviceid)
+			_apikey = basic.get_pares_info(argv, 'apikey')
+			# print('_apikey: ', _apikey)
+			BasicDef.set_device_id(_deviceid)
+			BasicDef.set_apikey(_apikey)
+			
+			post2OneNet = True
+		except KeyError as e:
+			print("--device=%s is not exsit! Data won't post to OneNet" % e)
+		
 	#无线网卡在系统中的名称
 	wlanname = "wlan0"
 	
@@ -27,14 +50,6 @@ def main():
 	memm = ""
 	ipadd = ""
 	netm = ""
-	
-	# thm = ""
-	# apm25 = ""
-	# pm25 = ""
-	# pm10 = ""
-	# gt03um = ""
-	# gt05um = ""
-	# gt10um = ""
 
 	#初始化传感器和子线程
 	#传感器设备数据读取存在延时，新起子线程异步执行，避免阻塞主线程
@@ -45,18 +60,18 @@ def main():
 	#初始化OLED
 	ssd1306thread = tssd1306()
 	#因为cpu信息读取时导致阻塞比较奇怪，故抽取出来另起子线程，避免阻塞主线程
-	cputhread = tcpu(timesleep)
+	cputhread = tcpu(timesleep, post2OneNet)
 	#创建systeminfo对象，读取系统基础信息
-	systeminfo = system(wlanname)
+	systeminfo = system(wlanname, post2OneNet)
 
-	#先初始化硬件设备，启动子线程
-	cputhread.start()
-	ssd1306thread.start()
-	
 	#按键操作
 	button_1 = tbutton(23, ssd1306thread)
 	button_1.start()
 	
+	#先初始化硬件设备，启动子线程
+	cputhread.start()
+	ssd1306thread.start()
+	#传感器子线程后面启动，因为：
 	pmsa003thread.start()
 	dht22thread.start()
 
@@ -99,6 +114,6 @@ if __name__ == "__main__":
 		raise AssertionError
 		
 	try:
-		main()
+		main(sys.argv)
 	except KeyboardInterrupt:
 		pass

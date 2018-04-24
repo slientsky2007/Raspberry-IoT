@@ -6,7 +6,7 @@ import socket
 import sys
 import time
 import datetime
-from BASICDEF import basic
+from basicdef import BasicDef
 from OneNetAPI import onenet
 
 try:
@@ -16,7 +16,7 @@ except ImportError:
 	sys.exit()
 
 class system():
-	def __init__(self, iface):
+	def __init__(self, iface, post2OneNet):
 		self.IFACE_INIT = iface
 		#上一次时间间隔时网络发送总流量和接受总流量
 		self.SEND_INIT = 0
@@ -25,24 +25,26 @@ class system():
 		self.Rx = 0
 		self.Tx = 0
 		
-		self.onenet = onenet()
+		self.post2OneNet = post2OneNet
+		if post2OneNet:
+			self.onenet = onenet()
+		
 
 	def get_RT_network_traffic(self, timesleep):
 		new_recv,new_send = self.get_net_TxRx()
 		self.Rx = (new_recv - self.RECV_INIT)/timesleep
 		self.Tx = (new_send - self.SEND_INIT)/timesleep
 		
-		self.onenet.num +=1
-		if self.onenet.num >= 10:
-			self.onenet.set("NetTx", self.Tx)
-			r1 = self.onenet.post()
-
-			self.onenet.set("NetRx", self.Rx)
-			r2 = self.onenet.post()	
-			self.onenet.num = 0
+		if self.post2OneNet:
+			self.onenet.num +=1
+			if self.onenet.num >= 10:
+				self.onenet.set("NetTx", self.Tx)
+				self.onenet.set("NetRx", self.Rx)
+				r2 = self.onenet.post_data_flow()	
+				self.onenet.num = 0
 		
-		recv_data = basic.bytes2human(self.Rx)
-		send_data = basic.bytes2human(self.Tx)
+		recv_data = BasicDef.bytes2human(self.Rx)
+		send_data = BasicDef.bytes2human(self.Tx)
 		self.RECV_INIT = new_recv
 		self.SEND_INIT = new_send
 		return "Tx %s,  Rx %s" % \
@@ -57,7 +59,7 @@ class system():
 	def get_mem_usage(self):
 		usage = psutil.virtual_memory()
 		return "Mem: %s %.0f%% %s free" \
-			% (basic.bytes2human(usage.total), usage.percent, basic.bytes2human(usage.free))
+			% (BasicDef.bytes2human(usage.total), usage.percent, BasicDef.bytes2human(usage.free))
 					
 	def getDate(self):
 		dt = datetime.datetime.now()
