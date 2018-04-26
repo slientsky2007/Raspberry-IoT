@@ -111,8 +111,10 @@ def main(argv):
 			
 			#由于传感器子线程默认timesleep=1并且需要等待读取数据，传感器读取的值是异步的，会有延时	
 			#主线程不断循环设置需要显示的数据给OLED子线程就ok了;
-			ssd1306thread.set_display_1(0, 10, cpum, memm, ipadd, netm)
-			ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um)
+			if ssd1306thread.display == 1:
+				ssd1306thread.set_display_1(0, 10, cpum, memm, ipadd, netm)
+			elif ssd1306thread.display == 2:
+				ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um)
 			
 			signal.alarm(0)
 			
