@@ -30,27 +30,25 @@ class OneNetApi():
 	def __init__(self):
 		# 设备ID
 		self.DEVICEID = BasicDef.get_device_id()
-		# 数据流名称
-		self.SENSORID = ''
-		# 数值
-		self.VALUE = 0
 		# APIKEY
 		self.APIKEY = BasicDef.get_apikey()
 		
 		self.num = 0
 		self.dict = {"datastreams": []}
+		self.SENSORID = []
+		self.payload = {}
 
-	def set(self, sensorid, value):
-		self.SENSORID = sensorid
-		self.VALUE = value
-		
+	#设置上传的数据流sensorid，数据点值value
+	def set_post_data_flow(self, sensorid, value):
 		d = {"id": "TEMP", "datapoints": [{"value": 50}]}
-		d['id'] = self.SENSORID
-		d['datapoints'][0]['value'] = self.VALUE
+		d['id'] = sensorid
+		d['datapoints'][0]['value'] = value
 		self.dict['datastreams'].append(d)
 
+	#提交数据流的数据点
 	def post_data_flow(self):
 		url = "http://api.heclouds.com/devices/%s/datapoints" % (self.DEVICEID)
+		
 		s = json.dumps(self.dict)
 		headers = {
 			"api-key": self.APIKEY,
@@ -65,36 +63,40 @@ class OneNetApi():
 		# print(r.text)
 		return r
 		
-# def main(argv):
-	# m = argv[1:]
-	# if m == []:
-		# print("No data post to OnetNet")
-	# else:
-		# _deviceid = basic.get_pares_info(argv, 'deviceid')
-		# print('_deviceid: ', _deviceid)
-		# _apikey = basic.get_pares_info(argv, 'apikey')
-		# print('_apikey: ', _apikey)
-		# BasicDef.set_device_id(_deviceid)
-		# BasicDef.set_apikey(_apikey)
-		# rPi = onenet()
-		# num = 0
-
-		# while True:
-			# if num < 1:
-				# rPi.set("Test1", random.randint(1, 100))
-				# rPi.set("Test2", random.randint(1, 100))
-				# print(rPi.dict)
-				# r = rPi.post_data_flow(_url)
-				# num +=1
-				# print(r.headers)
-				# print('1',20 * '*')
-				# print(r.text)
-				# print('2',20 * '*')
-				# time.sleep(5)
-			# else:break
-
-# if __name__ == "__main__":
-	# try:
-		# main(sys.argv)
-	# except KeyboardInterrupt:
-		# pass
+	def set_get_data(self, keys, sensorid):
+		if self.payload.get(keys) == None:
+			self.payload[keys] = sensorid
+		else:
+			s = ',' + sensorid
+			self.payload[keys] += s
+		# print(self.payload)
+	
+	#查询数据流
+	def get_dataflow(self):
+		url = "http://api.heclouds.com/devices/%s/datastreams" % (self.DEVICEID)
+		headers = {
+			"api-key": self.APIKEY,
+			"Connection": "close",
+		}
+		try:
+			r = requests.get(url, headers=headers, params=self.payload, timeout=1)
+		except:
+			print("get_data_flow failed")
+			return False
+		finally: self.payload = {}
+		return r
+	
+	#查询一段时间内的数据点
+	def get_datapoints(self):
+		url = "http://api.heclouds.com/devices/%s/datapoints" % (self.DEVICEID)
+		headers = {
+			"api-key": self.APIKEY,
+			"Connection": "close",
+		}
+		try:
+			r = requests.get(url, headers=headers, params=self.payload, timeout=1)
+		except:
+			print("get_data_flow failed")
+			return False
+		finally: self.payload = {}
+		return r
