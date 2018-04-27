@@ -21,6 +21,9 @@ import RPi.GPIO as GPIO
 class tbutton(threading.Thread):
 	def __init__(self, pin, oled):
 		threading.Thread.__init__(self)
+		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
+		# self.setDaemon(True)
+		# self.join(1)
 		self.oled = oled
 		self.timesleep = 1
 		self.pin = pin
@@ -42,17 +45,14 @@ class tbutton(threading.Thread):
 			self.oled.display = 2
 		elif self.press_time==3:
 			# print('python will close in %s'%(self.count_down))
-			self.count_down=10
 			self.oled.count = 10
 			self.oled.display = 3
 		elif self.press_time==4:
 			# print('system will restart in %s'%(self.count_down))
-			self.count_down=10
 			self.oled.count = 10
 			self.oled.display = 4
 		elif self.press_time==5:
 			# print('system will halt in %s'%(self.count_down))
-			self.count_down=10
 			self.oled.count = 10
 			self.oled.display = 5
 		
@@ -61,15 +61,12 @@ class tbutton(threading.Thread):
 		try:
 			while True:
 				if self.press_time==3 and self.oled.count <=0:
-					self.oled.count = 10
 					print("now close python app")
 					
 				elif self.press_time==4 and self.oled.count <=0:
-					self.oled.count = 10
 					print("now restart system")
 					
 				elif self.press_time==5 and self.oled.count <=0:
-					self.oled.count = 10
 					print("system now shutdown")
 				
 				# print(' '+ str(self.oled.count))	

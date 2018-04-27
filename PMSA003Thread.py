@@ -22,13 +22,14 @@ import datetime
 class tpmsa003(threading.Thread):
 	def __init__(self, usbdevice, timesleep=2):
 		threading.Thread.__init__(self)
-		self.pmdatas = ""
+		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
+		self.setDaemon(True)
+		
 		self.timesleep = timesleep
 		#usb口转UART CH340
 		self.pm_device = usbdevice
 			
-		self.timestamp = ""
-		
+		self.timestamp = ""	
 		self.apm10 = 0
 		self.apm25 = 0
 		self.apm100 = 0

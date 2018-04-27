@@ -26,6 +26,8 @@ from systeminfo import SystemInfo
 from basicdef import BasicDef
 
 def main(argv):
+	system_reboot = False
+	system_shutdown = False
 	#是否上传数据到OneNet平台
 	post2OneNet = False
 	#检查参数是否存在
@@ -74,9 +76,9 @@ def main(argv):
 	#创建systeminfo对象，读取系统基础信息
 	systeminfo = SystemInfo(wlanname, post2OneNet)
 
-	#按键操作
+	#按键操作,暂时无需启动子线程
 	button_1 = tbutton(23, ssd1306thread)
-	button_1.start()
+	# button_1.start()
 	
 	#先初始化硬件设备，启动子线程
 	cputhread.start()
@@ -115,12 +117,25 @@ def main(argv):
 				ssd1306thread.set_display_1(0, 10, cpum, memm, ipadd, netm)
 			elif ssd1306thread.display == 2:
 				ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um)
+			elif ssd1306thread.display == 3 and ssd1306thread.count <= 0:
+				break
+			elif ssd1306thread.display == 4 and ssd1306thread.count <= 0:
+				system_reboot = True
+				break
+			elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
+				system_shutdown = True
+				break
 			
 			signal.alarm(0)
 			
 		except AssertionError:
 			continue
-			
+		
+		if system_reboot == True: 
+			print()
+		elif system_shutdown == True: 
+			print()
+		
 if __name__ == "__main__":
 	def handler(signum, frame):
 		raise AssertionError

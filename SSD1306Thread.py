@@ -28,13 +28,16 @@ from PIL import ImageDraw, ImageFont
 class tssd1306(threading.Thread):
 	def __init__(self, timesleep=1):
 		threading.Thread.__init__(self)
+		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
+		self.setDaemon(True)
+		
 		self.timesleep = timesleep
 		self.welcometimesleep = 5
 		
 		#串口设备i2c ssd1306 128*64 OLED 显示器
 		self.serial = i2c(port=1, address=0x3C)
 		self.oled = ssd1306(self.serial)
-		self.cout = 10
+		self.count = 10
 		
 		#字体
 		#font = ImageFont.load_default() 

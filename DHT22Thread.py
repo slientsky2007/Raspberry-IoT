@@ -24,6 +24,8 @@ import Adafruit_DHT
 class tdht22(threading.Thread):
 	def __init__(self, pin):
 		threading.Thread.__init__(self)
+		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
+		self.setDaemon(True)
 		self.H = 0
 		self.T = 0
 		self.timesleep = 1
