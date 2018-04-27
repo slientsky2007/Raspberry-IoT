@@ -58,12 +58,18 @@ class tssd1306(threading.Thread):
 		self.co2 = ''
 		self.apm10 = ''
 		self.apm25 = ''
+		self.apm100 = ''
 		self.pm10 = ''
 		self.pm25 = ''
+		self.pm100 = ''
 		self.gt03um = ''
 		self.gt05um = ''
 		self.gt10um = ''
 		self.gt25um = ''
+		
+		self.aqi1 = ''
+		self.aqi2 = ''
+		self.aqi3 = ''
 	
 	def run(self):
 		try:
@@ -97,10 +103,10 @@ class tssd1306(threading.Thread):
 			elif self.display == 2:
 				draw.text((x, y), self.thm, font=self.font2, fill="white")
 				draw.text((x, y+10), "CO2: ", font=self.font2, fill="white")
-				draw.text((x, y+20), self.apm25, font=self.font2, fill="white")
-				draw.text((x, y+30), self.pm10, font=self.font2, fill="white")
-				draw.text((x, y+40), self.pm25, font=self.font2, fill="white")
-				draw.text((x, y+50), self.gt03um, font=self.font2, fill="white")
+				draw.text((x, y+25), " APM | PM | Gtum", fill="white")
+				draw.text((x, y+35), self.aqi1, font=self.font2, fill="white")
+				draw.text((x, y+45), self.aqi2, font=self.font2, fill="white")
+				draw.text((x, y+55), self.aqi3, font=self.font2, fill="white")
 				
 			elif self.display == 3:
 				self.count -=1
@@ -123,21 +129,29 @@ class tssd1306(threading.Thread):
 		self.ipadd = ipadd
 		self.netm = netm
 		
-	def set_display_2(self, x, y, humidity, temperature, apm10, apm25, pm25, pm10, gt03um, gt05um, gt10um, gt25um):
+	def set_display_2(self, x, y, humidity, temperature, apm10, apm25, apm100, pm10, pm25, pm100, gt03um, gt05um, gt10um, gt25um, gt50um, gt100um):
 		self.x = x
 		self.y = y
 		T = str(temperature) + '%'
 		H = str(humidity) + u'°C'
 		self.thm = "T&H: %s | %s" % \
 				(T, H)
-		self.apm10 = 'apm1.0: %sug/m^3'%(str(apm10))
-		self.apm25 = 'apm2.5: %sug/m^3'%(str(apm25))
-		self.pm10 = 'pm1.0: %sug/m^3'%(str(pm10))
-		self.pm25 = 'pm2.5: %sug/m^3'%(str(pm25))
-		self.gt03um = 'gt0.3um: %s/0.1L^3'%(str(gt03um))
-		self.gt05um = 'gt0.5um: %s/0.1L^3'%(str(gt05um))
-		self.gt10um = 'gt1.0um: %s/0.1L^3'%(str(gt10um))
-		self.gt25um = 'gt2.5um: %s/0.1L^3'%(str(gt25um))
+				
+		self.aqi1 = ' %s | %s | %s'%(str(apm10), str(pm10), str(gt03um))
+		self.aqi2 = ' %s | %s | %s'%(str(apm25), str(pm25), str(gt05um))
+		self.aqi3 = ' %s | %s | %s'%(str(apm100), str(pm100), str(gt10um))
+		# self.apm10 = 'apm1.0: %sug/m^3'%(str(apm10))
+		# self.apm25 = 'apm2.5: %sug/m^3'%(str(apm25))
+		# self.apm100 = 'apm10: %sug/m^3'%(str(apm100))		
+		# self.pm10 = 'pm1.0: %sug/m^3'%(str(pm10))
+		# self.pm25 = 'pm2.5: %sug/m^3'%(str(pm25))
+		# self.pm100 = 'pm10: %sug/m^3'%(str(pm100))
+		# self.gt03um = 'gt0.3um: %s/0.1L^3'%(str(gt03um))
+		# self.gt05um = 'gt0.5um: %s/0.1L^3'%(str(gt05um))
+		# self.gt10um = 'gt1.0um: %s/0.1L^3'%(str(gt10um))
+		# self.gt25um = 'gt2.5um: %s/0.1L^3'%(str(gt25um))
+		# self.gt50um = 'gt5.0um: %s/0.1L^3'%(str(gt50um))
+		# self.gt100um = 'gt10um: %s/0.1L^3'%(str(gt100um))
 
 	#设置开屏信息
 	def set_welcomemessage(self, welcomemessage):
