@@ -126,7 +126,8 @@ def main(argv):
 				ssd1306thread.stop()
 				cputhread.stop()
 				pmsa003thread.stop()
-				dht22thread.stop()				
+				dht22thread.stop()
+				time.sleep(3)
 				sys.exit(0)
 				
 			elif ssd1306thread.display == 4 and ssd1306thread.count <= 0:
@@ -135,8 +136,9 @@ def main(argv):
 				ssd1306thread.stop()
 				cputhread.stop()
 				pmsa003thread.stop()
-				dht22thread.stop()			
-				os.system('reboot')
+				dht22thread.stop()
+				time.sleep(3)
+				os.system('sudo reboot')
 				
 			elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
 				system_shutdown = True
@@ -144,8 +146,9 @@ def main(argv):
 				ssd1306thread.stop()
 				cputhread.stop()
 				pmsa003thread.stop()
-				dht22thread.stop()				
-				os.system('halt')
+				dht22thread.stop()
+				time.sleep(3)
+				os.system('sudo halt')
 			
 			signal.alarm(0)
 			
