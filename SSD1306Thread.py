@@ -29,9 +29,9 @@ class tssd1306(threading.Thread):
 	def __init__(self, timesleep=1):
 		threading.Thread.__init__(self)
 		self.__flag = threading.Event()     # 用于暂停线程的标识
-        self.__flag.set()       # 设置为True
-        self.__running = threading.Event()      # 用于停止线程的标识
-        self.__running.set()      # 将running设置为True
+		self.__flag.set()       # 设置为True
+		self.__running = threading.Event()      # 用于停止线程的标识
+		self.__running.set()      # 将running设置为True
 		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
 		self.setDaemon(True)
 		
@@ -109,8 +109,8 @@ class tssd1306(threading.Thread):
 				draw.text((x, y+40), self.netm, font=self.font2, fill="white")
 				
 			elif self.display == 2:
-				draw.text((x, y), self.thm, font=self.font2, fill="white")
-				draw.text((x, y+10), "CO2: ", font=self.font2, fill="white")
+				draw.text((x, y+5), self.thm, font=self.font2, fill="white")
+				draw.text((x, y+15), "CO2: ", font=self.font2, fill="white")
 				draw.text((x, y+25), " APM | PM | Gtum", fill="white")
 				draw.text((x, y+35), self.aqi1, font=self.font2, fill="white")
 				draw.text((x, y+45), self.aqi2, font=self.font2, fill="white")
@@ -145,9 +145,9 @@ class tssd1306(threading.Thread):
 		self.thm = "T&H: %s | %s" % \
 				(T, H)
 				
-		self.aqi1 = ' %s | %s | %s'%(str(apm10), str(pm10), str(gt03um))
-		self.aqi2 = ' %s | %s | %s'%(str(apm25), str(pm25), str(gt05um))
-		self.aqi3 = ' %s | %s | %s'%(str(apm100), str(pm100), str(gt10um))
+		self.aqi1 = '  %s   |  %s  |  %s'%(str(apm10), str(pm10), str(gt03um))
+		self.aqi2 = '  %s   |  %s  |  %s'%(str(apm25), str(pm25), str(gt05um))
+		self.aqi3 = '  %s   |  %s  |  %s'%(str(apm100), str(pm100), str(gt10um))
 		# self.apm10 = 'apm1.0: %sug/m^3'%(str(apm10))
 		# self.apm25 = 'apm2.5: %sug/m^3'%(str(apm25))
 		# self.apm100 = 'apm10: %sug/m^3'%(str(apm100))		

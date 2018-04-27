@@ -18,12 +18,8 @@ import sys
 import time
 import RPi.GPIO as GPIO
 
-class tbutton(threading.Thread):
+class button():
 	def __init__(self, pin, oled):
-		threading.Thread.__init__(self)
-		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
-		# self.setDaemon(True)
-		# self.join(1)
 		self.oled = oled
 		self.timesleep = 1
 		self.pin = pin
@@ -55,26 +51,6 @@ class tbutton(threading.Thread):
 			# print('system will halt in %s'%(self.count_down))
 			self.oled.count = 10
 			self.oled.display = 5
-		
-
-	def run(self):
-		try:
-			while True:
-				if self.press_time==3 and self.oled.count <=0:
-					print("now close python app")
-					
-				elif self.press_time==4 and self.oled.count <=0:
-					print("now restart system")
-					
-				elif self.press_time==5 and self.oled.count <=0:
-					print("system now shutdown")
-				
-				# print(' '+ str(self.oled.count))	
-				time.sleep(self.timesleep)
-		except KeyboardInterrupt:
-			raise
-		# finally:
-			# self.cleanup()
 			
 	def cleanup(self):
 		'''释放资源，不然下次运行是可能会收到警告

@@ -17,7 +17,7 @@ import signal
 
 #自定义类
 from CPUThread import tcpu
-from ButtonThread import tbutton
+from Button import button
 from DHT22Thread import tdht22
 from SSD1306Thread import tssd1306
 from PMSA003Thread import tpmsa003
@@ -76,9 +76,8 @@ def main(argv):
 	#创建systeminfo对象，读取系统基础信息
 	systeminfo = SystemInfo(wlanname, post2OneNet)
 
-	#按键操作,暂时无需启动子线程
-	button_1 = tbutton(23, ssd1306thread)
-	# button_1.start()
+	#按键操作
+	button_1 = button(23, ssd1306thread)
 	
 	#先初始化硬件设备，启动子线程
 	cputhread.start()
@@ -125,19 +124,27 @@ def main(argv):
 				# os.execl(python, python, * sys.argv)
 				print("Programe off")
 				ssd1306thread.stop()
-				
+				cputhread.stop()
+				pmsa003thread.stop()
+				dht22thread.stop()				
 				sys.exit(0)
+				
 			elif ssd1306thread.display == 4 and ssd1306thread.count <= 0:
 				system_reboot = True
 				print("system rebooting")
 				ssd1306thread.stop()
-				
+				cputhread.stop()
+				pmsa003thread.stop()
+				dht22thread.stop()			
 				os.system('reboot')
+				
 			elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
 				system_shutdown = True
 				print("system off")
 				ssd1306thread.stop()
-				
+				cputhread.stop()
+				pmsa003thread.stop()
+				dht22thread.stop()				
 				os.system('halt')
 			
 			signal.alarm(0)

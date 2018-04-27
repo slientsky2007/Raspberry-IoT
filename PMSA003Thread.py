@@ -22,6 +22,10 @@ import datetime
 class tpmsa003(threading.Thread):
 	def __init__(self, usbdevice, timesleep=2):
 		threading.Thread.__init__(self)
+		self.__flag = threading.Event()     # 用于暂停线程的标识
+		self.__flag.set()       # 设置为True
+		self.__running = threading.Event()      # 用于停止线程的标识
+		self.__running.set()      # 将running设置为True
 		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
 		self.setDaemon(True)
 		
@@ -53,7 +57,7 @@ class tpmsa003(threading.Thread):
 		except OSError:
 			self.is_device = False
 			return self.is_device
-		while True:
+		while self.__running.isSet():
 			time.sleep(self.timesleep)
 			self.pm_res = self.get_pm_data()
 			if self.pm_res == False:
@@ -119,34 +123,12 @@ class tpmsa003(threading.Thread):
 		dt = datetime.datetime.now()
 		return dt.strftime( '%x %H:%M:%S %p' )
 		
-# def main():
-	# pmsa003thread = pmsa003()
-	# pmsa003thread.start()
-	
-	# while True:
-		# time.sleep(2)
-		# if pmsa003thread.pm_res == False:
-			# continue
+	def pause(self):
+		self.__flag.clear()     # 设置为False, 让线程阻塞
 
-		# pmmessage = "%s, apm2.5: %sug/m^3, pm2.5: %sug/m^3, pm1.0: %sug/m^3, gt0.3um: %sn/0.1L^3, gt0.5um: %sn/0.1L^3, gt1.0um: %sn/0.1L^3, gt2.5um: %sn/0.1L^3" % \
-			# (pmsa003thread.timestamp, pmsa003thread.apm25, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um)
-		# print(pmmessage)
-		# print("apm2.5: " + pmsa003thread.apm25 + "ug/m^3")
-		# print("apm1.0: " + pmsa003thread.apm10 + "ug/m^3")
-		# print("apm10: " + pmsa003thread.apm100 + "ug/m^3")
-		# print("pm2.5: " + pmsa003thread.pm25 + "ug/m^3")
-		# print("pm1.0: " + pmsa003thread.pm10 + "ug/m^3")
-		# print("pm10: " + pmsa003thread.pm100 + "ug/m^3")
-		# print("gt0.3um: " + pmsa003thread.gt03um + "n/0.1L^3")
-		# print("gt0.5um: " + pmsa003thread.gt05um + "n/0.1L^3")
-		# print("gt1.0um: " + pmsa003thread.gt10um + "n/0.1L^3")
-		# print("gt2.5um: " + pmsa003thread.gt25um + "n/0.1L^3")
-		# print("gt5.0um: " + pmsa003thread.gt50um + "n/0.1L^3")
-		# print("gt10um: " + pmsa003thread.gt100um + "n/0.1L^3")
-		
+	def resume(self):
+		self.__flag.set()    # 设置为True, 让线程停止阻塞
 
-# if __name__ == "__main__":
-	# try:
-		# main()
-	# except KeyboardInterrupt:
-		# pass
+	def stop(self):
+		self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
+		self.__running.clear()        # 设置为False

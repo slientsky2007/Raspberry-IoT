@@ -29,6 +29,10 @@ except ImportError:
 class tcpu(threading.Thread):
 	def __init__(self, timesleep, post2OneNet):
 		threading.Thread.__init__(self)
+		self.__flag = threading.Event()     # 用于暂停线程的标识
+		self.__flag.set()       # 设置为True
+		self.__running = threading.Event()      # 用于停止线程的标识
+		self.__running.set()      # 将running设置为True
 		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
 		self.setDaemon(True)
 		self.cpum = ""
@@ -39,7 +43,7 @@ class tcpu(threading.Thread):
 		self.post2OneNet = post2OneNet
 	
 	def run(self):
-		while True:
+		while self.__running.isSet():
 			time.sleep(self.cputimesleep)
 			self.cpum = self.cpu_usage()
 
@@ -58,4 +62,12 @@ class tcpu(threading.Thread):
 		return "Cpu(s):%s Up:%s" \
 			% (str(cpu)+'%', str(uptime).split('.')[0])	
 		
-		
+	def pause(self):
+		self.__flag.clear()     # 设置为False, 让线程阻塞
+
+	def resume(self):
+		self.__flag.set()    # 设置为True, 让线程停止阻塞
+
+	def stop(self):
+		self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
+		self.__running.clear()        # 设置为False
