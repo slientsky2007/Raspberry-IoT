@@ -28,6 +28,10 @@ from PIL import ImageDraw, ImageFont
 class tssd1306(threading.Thread):
 	def __init__(self, timesleep=1):
 		threading.Thread.__init__(self)
+		self.__flag = threading.Event()     # 用于暂停线程的标识
+        self.__flag.set()       # 设置为True
+        self.__running = threading.Event()      # 用于停止线程的标识
+        self.__running.set()      # 将running设置为True
 		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
 		self.setDaemon(True)
 		
@@ -76,7 +80,8 @@ class tssd1306(threading.Thread):
 	
 	def run(self):
 		try:
-			while True:
+			while self.__running.isSet():
+				self.__flag.wait()
 				self.stats()
 				time.sleep(self.timesleep)
 		except KeyboardInterrupt:
@@ -164,3 +169,13 @@ class tssd1306(threading.Thread):
 	def getDateTime(self):
 		dt = datetime.datetime.now()
 		return dt.strftime( '%x %H:%M:%S %p' )
+
+	def pause(self):
+		self.__flag.clear()     # 设置为False, 让线程阻塞
+
+	def resume(self):
+		self.__flag.set()    # 设置为True, 让线程停止阻塞
+
+	def stop(self):
+		self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
+		self.__running.clear()        # 设置为False

@@ -118,23 +118,27 @@ def main(argv):
 			elif ssd1306thread.display == 2:
 				ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um)
 			elif ssd1306thread.display == 3 and ssd1306thread.count <= 0:
-				break
+				# """Restarts the current program. 
+				# Note: this function does not return. Any cleanup action (like 
+				# saving data) must be done before calling this function."""  
+				# python = sys.executable  
+				# os.execl(python, python, * sys.argv)
+				print("Programe off")
+				ssd1306thread.stop()
+				sys.exit(0)
 			elif ssd1306thread.display == 4 and ssd1306thread.count <= 0:
 				system_reboot = True
-				break
+				print("system rebooting")
+				os.system('reboot')
 			elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
 				system_shutdown = True
-				break
+				print("system off")
+				os.system('halt')
 			
 			signal.alarm(0)
 			
 		except AssertionError:
 			continue
-		
-		if system_reboot == True: 
-			print()
-		elif system_shutdown == True: 
-			print()
 		
 if __name__ == "__main__":
 	def handler(signum, frame):
@@ -143,4 +147,4 @@ if __name__ == "__main__":
 	try:
 		main(sys.argv)
 	except KeyboardInterrupt:
-		pass
+		sys.exit(0)
