@@ -116,7 +116,7 @@ def main(argv):
 			if ssd1306thread.display == 1:
 				ssd1306thread.set_display_1(0, 10, cpum, memm, ipadd, netm)
 			elif ssd1306thread.display == 2:
-				ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.pm25, pmsa003thread.pm10, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um)
+				ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.apm100, pmsa003thread.pm10, pmsa003thread.pm25, pmsa003thread.pm100, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um, pmsa003thread.gt50um, pmsa003thread.gt100um)
 			elif ssd1306thread.display == 3 and ssd1306thread.count <= 0:
 				# """Restarts the current program. 
 				# Note: this function does not return. Any cleanup action (like 
@@ -125,14 +125,19 @@ def main(argv):
 				# os.execl(python, python, * sys.argv)
 				print("Programe off")
 				ssd1306thread.stop()
+				
 				sys.exit(0)
 			elif ssd1306thread.display == 4 and ssd1306thread.count <= 0:
 				system_reboot = True
 				print("system rebooting")
+				ssd1306thread.stop()
+				
 				os.system('reboot')
 			elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
 				system_shutdown = True
 				print("system off")
+				ssd1306thread.stop()
+				
 				os.system('halt')
 			
 			signal.alarm(0)
