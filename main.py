@@ -26,7 +26,14 @@ from systeminfo import SystemInfo
 from basicdef import BasicDef
 
 def main(argv):
-	system_reboot = False
+	#休眠时间/秒
+	timesleep = 1
+	button_GPIO = 23
+	dht22_GPIO = 24
+	pmsa003_USB = '/dev/ttyUSB0'
+	#无线网卡名称
+	wlan_name = "wlan0"
+	
 	system_shutdown = False
 	#是否上传数据到OneNet平台
 	post2OneNet = False
@@ -49,12 +56,6 @@ def main(argv):
 			post2OneNet = True
 		except KeyError as e:
 			print("--device=%s is not exsit! Data won't post to OneNet" % e)
-		
-	#无线网卡在系统中的名称
-	wlanname = "wlan0"
-	
-	#休眠时间/秒
-	timesleep = 1
 	
 	#初始化要OLED显示的内容
 	cpum = ""
@@ -65,19 +66,19 @@ def main(argv):
 
 	#初始化传感器和子线程
 	#传感器设备数据读取存在延时，新起子线程异步执行，避免阻塞主线程
-	dht22thread = tdht22(24)
+	dht22thread = tdht22(dht22_GPIO)
 	#初始化Pm传感器，为了读数准确，传感器需要预热30秒时间
-	pmsa003thread = tpmsa003('/dev/ttyUSB0')
+	pmsa003thread = tpmsa003(pmsa003_USB)
 
 	#初始化OLED
 	ssd1306thread = tssd1306()
 	#因为cpu信息读取时导致阻塞比较奇怪，故抽取出来另起子线程，避免阻塞主线程
 	cputhread = tcpu(timesleep, post2OneNet)
 	#创建systeminfo对象，读取系统基础信息
-	systeminfo = SystemInfo(wlanname, post2OneNet)
+	systeminfo = SystemInfo(wlan_name, post2OneNet)
 
 	#按键操作
-	button_1 = button(23, ssd1306thread)
+	button_1 = button(button_GPIO, ssd1306thread)
 	
 	#先初始化硬件设备，启动子线程
 	cputhread.start()
@@ -88,7 +89,7 @@ def main(argv):
 
 	
 	while True:
-		#每次刷新数据间隔时间
+		#每次刷新数据时间间隔
 		time.sleep(timesleep)
 		
 		#默认显示欢迎界面，OLED子线程默认1秒刷新一次屏幕;
@@ -104,12 +105,12 @@ def main(argv):
 			#为了时间显示比较正常，将时间获取放在绘制屏幕子线程中执行)
 			# datem = str(systeminfo.getDateTime())			
 			memm = systeminfo.get_mem_usage()
-			ipadd = "Wlan0: " + systeminfo.getIP()
+			ipadd = systeminfo.getIP()
 			netm = systeminfo.get_RT_network_traffic(timesleep)
 			
 			#子线程自身不断循环获取最新读数
 			cpum = cputhread.cpum
-			
+
 			#由于传感器子线程默认timesleep=1并且需要等待读取数据，传感器读取的值是异步的，会有延时	
 			#主线程不断循环设置需要显示的数据给OLED子线程就ok了;
 			if ssd1306thread.display == 1:
@@ -137,8 +138,7 @@ def main(argv):
 				cputhread.stop()
 				pmsa003thread.stop()
 				dht22thread.stop()
-				time.sleep(3)
-				os.system('sudo reboot')
+				break
 				
 			elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
 				system_shutdown = True
@@ -147,13 +147,15 @@ def main(argv):
 				cputhread.stop()
 				pmsa003thread.stop()
 				dht22thread.stop()
-				time.sleep(3)
-				os.system('sudo halt')
+				break
 			
 			signal.alarm(0)
 			
 		except AssertionError:
 			continue
+		
+	if system_reboot: os.system('sudo reboot')
+	elif system_shutdown: os.system('sudo halt')
 		
 if __name__ == "__main__":
 	def handler(signum, frame):

@@ -24,6 +24,8 @@ from luma.oled.device import ssd1306, ssd1325, ssd1331, sh1106
 from luma.core.render import canvas
 from PIL import ImageDraw, ImageFont
 
+from basicdef import BasicDef
+
   
 class tssd1306(threading.Thread):
 	def __init__(self, timesleep=1):
@@ -132,10 +134,13 @@ class tssd1306(threading.Thread):
 	def set_display_1(self, x, y, cpum, memm, ipadd, netm):
 		self.x = x
 		self.y = y
-		self.cpum = cpum
-		self.memm = memm
-		self.ipadd = ipadd
-		self.netm = netm
+		self.cpum = "Cpu(s):%s Up:%s" \
+			% (str(cpum[0])+'%', str(cpum[1]).split('.')[0])
+		self.memm = "Mem: %s %.0f%% %s free" \
+			% (BasicDef.bytes2human(memm[0]), memm[1], BasicDef.bytes2human(memm[2]))
+		self.ipadd = "Wlan0: " + ipadd
+		self.netm = "Tx %s,  Rx %s" % \
+				(netm[0], netm[1])
 		
 	def set_display_2(self, x, y, humidity, temperature, apm10, apm25, apm100, pm10, pm25, pm100, gt03um, gt05um, gt10um, gt25um, gt50um, gt100um):
 		self.x = x

@@ -59,8 +59,7 @@ class tcpu(threading.Thread):
 				r = self.onenet.post_data_flow()
 				self.onenet.num = 0
 
-		return "Cpu(s):%s Up:%s" \
-			% (str(cpu)+'%', str(uptime).split('.')[0])	
+		return [cpu, uptime]
 		
 	def pause(self):
 		self.__flag.clear()     # 设置为False, 让线程阻塞

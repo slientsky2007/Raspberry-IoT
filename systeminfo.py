@@ -20,7 +20,6 @@ import sys
 import time
 import datetime
 
-from basicdef import BasicDef
 from onenetapi import OneNetApi
 
 try:
@@ -56,13 +55,10 @@ class SystemInfo():
 				self.onenet.set("NetRx", self.Rx)
 				r2 = self.onenet.post_data_flow()	
 				self.onenet.num = 0
-		
-		recv_data = BasicDef.bytes2human(self.Rx)
-		send_data = BasicDef.bytes2human(self.Tx)
+				
 		self.RECV_INIT = new_recv
 		self.SEND_INIT = new_send
-		return "Tx %s,  Rx %s" % \
-				(send_data, recv_data)
+		return [self.Tx, self.Rx]
 
 	def get_net_TxRx(self):
 		stat = psutil.net_io_counters(pernic=True)[self.IFACE_INIT]
@@ -72,8 +68,7 @@ class SystemInfo():
 	
 	def get_mem_usage(self):
 		usage = psutil.virtual_memory()
-		return "Mem: %s %.0f%% %s free" \
-			% (BasicDef.bytes2human(usage.total), usage.percent, BasicDef.bytes2human(usage.free))
+		return [usage.total, usage.percent, usage.free]
 					
 	def getDate(self):
 		dt = datetime.datetime.now()
