@@ -138,6 +138,7 @@ def main(argv):
 				cputhread.stop()
 				pmsa003thread.stop()
 				dht22thread.stop()
+				time.sleep(3)
 				break
 				
 			elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
@@ -147,6 +148,7 @@ def main(argv):
 				cputhread.stop()
 				pmsa003thread.stop()
 				dht22thread.stop()
+				time.sleep(3)
 				break
 			
 			signal.alarm(0)
