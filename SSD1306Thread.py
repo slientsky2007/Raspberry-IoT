@@ -184,3 +184,5 @@ class tssd1306(threading.Thread):
 	def stop(self):
 		self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
 		self.__running.clear()        # 设置为False
+		self.oled.clear()
+		self.oled.cleanup()

@@ -94,68 +94,67 @@ def main(argv):
 		
 		#默认显示欢迎界面，OLED子线程默认1秒刷新一次屏幕;
 		
-		#自定义signal handler，如果执行的方法超时，则抛出异常继续循环
-		#应该将系统基本信息获取方法抽取出来做成system类
-		try:
-			signal.signal(signal.SIGALRM, handler)
-			signal.alarm(timesleep)
+		# 自定义signal handler，如果执行的方法超时，则抛出异常继续循环
+		# 应该将系统基本信息获取方法抽取出来做成system类
+		# try:
+			# signal.signal(signal.SIGALRM, handler)
+			# signal.alarm(timesleep)
 			
-			#系统基础信息
-			#(由于使用子线程异步读取数据，故存在时间差，
-			#为了时间显示比较正常，将时间获取放在绘制屏幕子线程中执行)
-			# datem = str(systeminfo.getDateTime())			
-			memm = systeminfo.get_mem_usage()
-			ipadd = systeminfo.getIP()
-			netm = systeminfo.get_RT_network_traffic(timesleep)
-			
-			#子线程自身不断循环获取最新读数
-			cpum = cputhread.cpum
-
-			#由于传感器子线程默认timesleep=1并且需要等待读取数据，传感器读取的值是异步的，会有延时	
-			#主线程不断循环设置需要显示的数据给OLED子线程就ok了;
-			if ssd1306thread.display == 1:
-				ssd1306thread.set_display_1(0, 10, cpum, memm, ipadd, netm)
-			elif ssd1306thread.display == 2:
-				ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.apm100, pmsa003thread.pm10, pmsa003thread.pm25, pmsa003thread.pm100, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um, pmsa003thread.gt50um, pmsa003thread.gt100um)
-			elif ssd1306thread.display == 3 and ssd1306thread.count <= 0:
-				# """Restarts the current program. 
-				# Note: this function does not return. Any cleanup action (like 
-				# saving data) must be done before calling this function."""  
-				# python = sys.executable  
-				# os.execl(python, python, * sys.argv)
-				print("Programe off")
-				ssd1306thread.stop()
-				cputhread.stop()
-				pmsa003thread.stop()
-				dht22thread.stop()
-				time.sleep(3)
-				sys.exit(0)
-				
-			elif ssd1306thread.display == 4 and ssd1306thread.count <= 0:
-				system_reboot = True
-				print("system rebooting")
-				ssd1306thread.stop()
-				cputhread.stop()
-				pmsa003thread.stop()
-				dht22thread.stop()
-				time.sleep(3)
-				break
-				
-			elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
-				system_shutdown = True
-				print("system off")
-				ssd1306thread.stop()
-				cputhread.stop()
-				pmsa003thread.stop()
-				dht22thread.stop()
-				time.sleep(3)
-				break
-			
-			signal.alarm(0)
-			
-		except AssertionError:
-			continue
+		#系统基础信息
+		#(由于使用子线程异步读取数据，故存在时间差，
+		#为了时间显示比较正常，将时间获取放在绘制屏幕子线程中执行)
+		# datem = str(systeminfo.getDateTime())			
+		memm = systeminfo.get_mem_usage()
+		ipadd = systeminfo.getIP()
+		netm = systeminfo.get_RT_network_traffic(timesleep)
 		
+		#子线程自身不断循环获取最新读数
+		cpum = cputhread.cpum
+
+		#由于传感器子线程默认timesleep=1并且需要等待读取数据，传感器读取的值是异步的，会有延时	
+		#主线程不断循环设置需要显示的数据给OLED子线程就ok了;
+		if ssd1306thread.display == 1:
+			ssd1306thread.set_display_1(0, 10, cpum, memm, ipadd, netm)
+		elif ssd1306thread.display == 2:
+			ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.apm100, pmsa003thread.pm10, pmsa003thread.pm25, pmsa003thread.pm100, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um, pmsa003thread.gt50um, pmsa003thread.gt100um)
+		elif ssd1306thread.display == 3 and ssd1306thread.count <= 0:
+			# """Restarts the current program. 
+			# Note: this function does not return. Any cleanup action (like 
+			# saving data) must be done before calling this function."""  
+			# python = sys.executable  
+			# os.execl(python, python, * sys.argv)
+			print("Programe off")
+			ssd1306thread.stop()
+			cputhread.stop()
+			pmsa003thread.stop()
+			dht22thread.stop()
+			sys.exit(0)
+			
+		elif ssd1306thread.display == 4 and ssd1306thread.count <= 0:
+			system_reboot = True
+			print("system rebooting")
+			ssd1306thread.stop()
+			cputhread.stop()
+			pmsa003thread.stop()
+			dht22thread.stop()
+			break
+			
+		elif ssd1306thread.display == 5 and ssd1306thread.count <= 0:
+			system_shutdown = True
+			print("system off")
+			ssd1306thread.stop()
+			cputhread.stop()
+			pmsa003thread.stop()
+			dht22thread.stop()
+			break
+		
+			# signal.alarm(0)
+			
+		# except AssertionError:
+			# print('main program timeout')
+			# continue
+	
+	time.sleep(3)
 	if system_reboot: os.system('sudo reboot')
 	elif system_shutdown: os.system('sudo halt')
 		
