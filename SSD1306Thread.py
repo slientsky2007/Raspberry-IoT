@@ -140,7 +140,7 @@ class tssd1306(threading.Thread):
 			% (BasicDef.bytes2human(memm[0]), memm[1], BasicDef.bytes2human(memm[2]))
 		self.ipadd = "Wlan0: " + ipadd
 		self.netm = "Tx %s,  Rx %s" % \
-				(netm[0], netm[1])
+				(BasicDef.bytes2human(netm[0]), BasicDef.bytes2human(netm[1]))
 		
 	def set_display_2(self, x, y, T_H, all_PMS):
 		self.x = x
