@@ -39,8 +39,9 @@ class tdht22(threading.Thread):
 		self.sensor = Adafruit_DHT.DHT22
 		self.pin = pin
 		
-		self.onenet = OneNetApi()
 		self.post2OneNet = post2OneNet
+		if post2OneNet:
+			self.onenet = OneNetApi()
 	
 	def run(self):
 		while self.__running.isSet():
@@ -50,10 +51,10 @@ class tdht22(threading.Thread):
 				self.T_H = is_T_H
 				if self.post2OneNet:
 					self.onenet.num += 1
-					if self.onenet.num >= 10:
+					if self.onenet.num >= 1:
 						if BasicDef.get_network_status():
-							self.onenet.set("T", self.T_H[0])
-							self.onenet.set("H", self.T_H[1])
+							self.onenet.set_post_data_flow("T", self.T_H[0])
+							self.onenet.set_post_data_flow("H", self.T_H[1])
 							r = self.onenet.post_data_flow()
 						self.onenet.num = 0
 

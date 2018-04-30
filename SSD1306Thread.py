@@ -149,10 +149,11 @@ class tssd1306(threading.Thread):
 		H = str(T_H[1]) + u'°C'
 		self.thm = "T&H: %s | %s" % \
 				(T, H)
-				
-		self.aqi1 = '  %s   |  %s  |  %s'%(str(all_PMS[0]), str(all_PMS[3]), str(all_PMS[6]))
-		self.aqi2 = '  %s   |  %s  |  %s'%(str(all_PMS[1]), str(all_PMS[4]), str(all_PMS[7]))
-		self.aqi3 = '  %s   |  %s  |  %s'%(str(all_PMS[2]), str(all_PMS[5]), str(all_PMS[8]))
+		
+		if len(all_PMS) >= 12:
+			self.aqi1 = '  %s   |  %s  |  %s'%(str(all_PMS[0]), str(all_PMS[3]), str(all_PMS[6]))
+			self.aqi2 = '  %s   |  %s  |  %s'%(str(all_PMS[1]), str(all_PMS[4]), str(all_PMS[7]))
+			self.aqi3 = '  %s   |  %s  |  %s'%(str(all_PMS[2]), str(all_PMS[5]), str(all_PMS[8]))
 		# self.apm10 = 'apm1.0: %sug/m^3'%(str(apm10))
 		# self.apm25 = 'apm2.5: %sug/m^3'%(str(apm25))
 		# self.apm100 = 'apm10: %sug/m^3'%(str(apm100))		

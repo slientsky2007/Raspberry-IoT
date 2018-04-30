@@ -23,7 +23,7 @@ from onenetapi import OneNetApi
 from basicdef import BasicDef
   
 class tpmsa003(threading.Thread):
-	def __init__(self, usbdevice, timesleep=2):
+	def __init__(self, usbdevice, post2OneNet, timesleep=2):
 		threading.Thread.__init__(self)
 		self.__flag = threading.Event()     # 用于暂停线程的标识
 		self.__flag.set()       # 设置为True
@@ -49,10 +49,14 @@ class tpmsa003(threading.Thread):
 		self.gt25um = 0
 		self.gt50um = 0
 		self.gt100um = 0
-		self.all_PMS = [self.apm10, self.apm25, self.apm100, self.pm10, self.pm25, self.pm100, self.gt03um, self.gt05um, self.gt10um, self.gt25um, self.gt50um, self.gt100um]
+		self.all_PMS = []
 		
 		self.pm_res = False
 		self.is_device = True
+		
+		self.post2OneNet = post2OneNet
+		if post2OneNet:
+			self.onenet = OneNetApi()
 	
 	def run(self):
 		#初始化pm传感器失败时
@@ -81,17 +85,18 @@ class tpmsa003(threading.Thread):
 			self.gt25um = self.pm_res['gt25um']
 			self.gt50um = self.pm_res['gt50um']
 			self.gt100um = self.pm_res['gt100um']
+			self.all_PMS = [self.apm10, self.apm25, self.apm100, self.pm10, self.pm25, self.pm100, self.gt03um, self.gt05um, self.gt10um, self.gt25um, self.gt50um, self.gt100um]
 			
 			if self.post2OneNet:
 				self.onenet.num += 1
 				if self.onenet.num >= 10:
 					if BasicDef.get_network_status():
-						self.onenet.set("apm10", self.apm10)
-						self.onenet.set("apm25", self.apm25)
-						self.onenet.set("pm10", self.pm10)
-						self.onenet.set("pm25", self.pm25)
-						self.onenet.set("gt03um", self.gt03um)
-						self.onenet.set("gt05um", self.gt05um)
+						self.onenet.set_post_data_flow("apm10", self.apm10)
+						self.onenet.set_post_data_flow("apm25", self.apm25)
+						self.onenet.set_post_data_flow("pm10", self.pm10)
+						self.onenet.set_post_data_flow("pm25", self.pm25)
+						# self.onenet.set_post_data_flow("gt03um", self.gt03um)
+						# self.onenet.set_post_data_flow("gt05um", self.gt05um)
 						r = self.onenet.post_data_flow()
 					self.onenet.num = 0
 					

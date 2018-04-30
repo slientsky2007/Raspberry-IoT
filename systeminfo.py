@@ -50,14 +50,14 @@ class SystemInfo():
 		self.Rx = (new_recv - self.RECV_INIT)/self.timesleep
 		self.Tx = (new_send - self.SEND_INIT)/self.timesleep
 		
-		if self.post2OneNet:
-			self.onenet.num +=1
-			if self.onenet.num >= 10:
-				if BasicDef.get_network_status():
-					self.onenet.set("NetTx", self.Tx)
-					self.onenet.set("NetRx", self.Rx)
-					r2 = self.onenet.post_data_flow()
-				self.onenet.num = 0
+		# if self.post2OneNet:
+			# self.onenet.num +=1
+			# if self.onenet.num >= 10:
+				# if BasicDef.get_network_status():
+					# self.onenet.set_post_data_flow("NetTx", self.Tx)
+					# self.onenet.set_post_data_flow("NetRx", self.Rx)
+					# r = self.onenet.post_data_flow()
+				# self.onenet.num = 0
 				
 		self.RECV_INIT = new_recv
 		self.SEND_INIT = new_send

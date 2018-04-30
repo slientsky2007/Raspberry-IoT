@@ -52,7 +52,7 @@ class tcpu(threading.Thread):
 				self.onenet.num += 1
 				if self.onenet.num >= 10:
 					if BasicDef.get_network_status():
-						self.onenet.set("CPU", cpum[0])
+						self.onenet.set_post_data_flow("CPU", self.cpum[0])
 						r = self.onenet.post_data_flow()
 					self.onenet.num = 0
 
