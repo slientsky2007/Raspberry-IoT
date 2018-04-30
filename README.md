@@ -4,6 +4,7 @@
 ## 所需硬件设备型号
 
 硬件连接请参考对应硬件引脚图[简书文章](https://www.jianshu.com/u/06e291ec9827).
+数据展示 [OneNet 应用](https://open.iot.10086.cn/appview/p/18739ef05c7a7c8bd6f631aa7e70b02a)
 
 ### 1. Raspberry pi (c)
 ### 2. ssd1306 128*64 OLED I2C
