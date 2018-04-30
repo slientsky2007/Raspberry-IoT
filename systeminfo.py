@@ -21,6 +21,7 @@ import time
 import datetime
 
 from onenetapi import OneNetApi
+from basicdef import BasicDef
 
 try:
 	import psutil
@@ -29,7 +30,8 @@ except ImportError:
 	sys.exit()
 
 class SystemInfo():
-	def __init__(self, iface, post2OneNet):
+	def __init__(self, iface, post2OneNet, timesleep):
+		self.timesleep = timesleep
 		self.IFACE_INIT = iface
 		#上一次时间间隔时网络发送总流量和接受总流量
 		self.SEND_INIT = 0
@@ -43,17 +45,18 @@ class SystemInfo():
 			self.onenet = OneNetApi()
 		
 
-	def get_RT_network_traffic(self, timesleep):
+	def get_RT_network_traffic(self):
 		new_recv,new_send = self.get_net_TxRx()
-		self.Rx = (new_recv - self.RECV_INIT)/timesleep
-		self.Tx = (new_send - self.SEND_INIT)/timesleep
+		self.Rx = (new_recv - self.RECV_INIT)/self.timesleep
+		self.Tx = (new_send - self.SEND_INIT)/self.timesleep
 		
 		if self.post2OneNet:
 			self.onenet.num +=1
 			if self.onenet.num >= 10:
-				self.onenet.set("NetTx", self.Tx)
-				self.onenet.set("NetRx", self.Rx)
-				r2 = self.onenet.post_data_flow()	
+				if BasicDef.get_network_status():
+					self.onenet.set("NetTx", self.Tx)
+					self.onenet.set("NetRx", self.Rx)
+					r2 = self.onenet.post_data_flow()
 				self.onenet.num = 0
 				
 		self.RECV_INIT = new_recv

@@ -68,16 +68,16 @@ def main(argv):
 	
 	#初始化传感器和子线程
 	#传感器设备数据读取存在延时，新起子线程异步执行，避免阻塞主线程
-	dht22thread = tdht22(dht22_GPIO)
+	dht22thread = tdht22(dht22_GPIO, POST_2_ONENET)
 	#初始化Pm传感器，为了读数准确，传感器需要预热30秒时间
-	pmsa003thread = tpmsa003(pmsa003_USB)
+	pmsa003thread = tpmsa003(pmsa003_USB, POST_2_ONENET)
 
 	#初始化OLED
 	ssd1306thread = tssd1306()
 	#因为cpu信息读取时导致阻塞比较奇怪，故抽取出来另起子线程，避免阻塞主线程
 	cputhread = tcpu(timesleep, POST_2_ONENET)
 	#创建systeminfo对象，读取系统基础信息
-	systeminfo = SystemInfo(wlan_name, POST_2_ONENET)
+	systeminfo = SystemInfo(wlan_name, POST_2_ONENET, timesleep)
 
 	#按键操作
 	button_1 = button(button_GPIO, ssd1306thread)
@@ -95,20 +95,14 @@ def main(argv):
 		
 		#默认显示欢迎界面，OLED子线程默认1秒刷新一次屏幕;
 		
-		# 自定义signal handler，如果执行的方法超时，则抛出异常继续循环
-		# 应该将系统基本信息获取方法抽取出来做成system类
-		# try:
-			# signal.signal(signal.SIGALRM, handler)
-			# signal.alarm(timesleep)
-		
 		#主线程不断循环,设置需要显示的数据给OLED子线程就ok了;
 		if ssd1306thread.display == 1:
 			#系统基础信息
 			#(由于使用子线程异步读取数据，故存在时间差，
-			ssd1306thread.set_display_1(0, 10, cputhread.cpum, systeminfo.get_mem_usage(), systeminfo.getIP(), systeminfo.get_RT_network_traffic(timesleep))
+			ssd1306thread.set_display_1(0, 10, cputhread.cpum, systeminfo.get_mem_usage(), systeminfo.getIP(), systeminfo.get_RT_network_traffic())
 		elif ssd1306thread.display == 2:
 			#传感器读取的值是异步的，会有延时
-			ssd1306thread.set_display_2(0, 0, dht22thread.H, dht22thread.T, pmsa003thread.apm10, pmsa003thread.apm25, pmsa003thread.apm100, pmsa003thread.pm10, pmsa003thread.pm25, pmsa003thread.pm100, pmsa003thread.gt03um, pmsa003thread.gt05um, pmsa003thread.gt10um, pmsa003thread.gt25um, pmsa003thread.gt50um, pmsa003thread.gt100um)
+			ssd1306thread.set_display_2(0, 0, dht22thread.T_H, pmsa003thread.all_PMS)
 		elif ssd1306thread.display == 3 and ssd1306thread.count <= 0:
 			# """Restarts the current program. 
 			# Note: this function does not return. Any cleanup action (like 
@@ -139,12 +133,6 @@ def main(argv):
 			pmsa003thread.stop()
 			dht22thread.stop()
 			break
-		
-			# signal.alarm(0)
-			
-		# except AssertionError:
-			# print('main program timeout')
-			# continue
 	
 	time.sleep(3)
 	if SYSTEM_REBOOT: os.system('sudo reboot')

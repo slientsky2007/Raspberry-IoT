@@ -18,6 +18,7 @@ import sys
 import time
 import datetime
 
+#自定义类
 from onenetapi import OneNetApi
 from basicdef import BasicDef
 
@@ -36,7 +37,7 @@ class tcpu(threading.Thread):
 		self.__running.set()      # 将running设置为True
 		#setDaemon(True)当主线程结束之后，会杀死子线程;如果加上join,并设置等待时间，就会等待线程一段时间再退出
 		self.setDaemon(True)
-		self.cpum = ""
+		self.cpum = [0, 0]
 		self.cputimesleep = 1
 		self.timesleep = timesleep
 		
@@ -47,19 +48,18 @@ class tcpu(threading.Thread):
 		while self.__running.isSet():
 			time.sleep(self.cputimesleep)
 			self.cpum = self.cpu_usage()
+			if self.post2OneNet:
+				self.onenet.num += 1
+				if self.onenet.num >= 10:
+					if BasicDef.get_network_status():
+						self.onenet.set("CPU", cpum[0])
+						r = self.onenet.post_data_flow()
+					self.onenet.num = 0
 
 	def cpu_usage(self, interval=1):
 		# load average, uptime
 		uptime = datetime.datetime.now() - datetime.datetime.fromtimestamp(psutil.boot_time())
 		cpu = psutil.cpu_percent(interval)
-		
-		if self.post2OneNet:
-			self.onenet.num += 1
-			if self.onenet.num >= 10:
-				if BasicDef.get_network_status():
-					self.onenet.set("CPU", cpu)
-					r = self.onenet.post_data_flow()
-				self.onenet.num = 0
 
 		return [cpu, uptime]
 		

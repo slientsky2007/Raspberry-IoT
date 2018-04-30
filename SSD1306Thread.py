@@ -142,17 +142,17 @@ class tssd1306(threading.Thread):
 		self.netm = "Tx %s,  Rx %s" % \
 				(netm[0], netm[1])
 		
-	def set_display_2(self, x, y, humidity, temperature, apm10, apm25, apm100, pm10, pm25, pm100, gt03um, gt05um, gt10um, gt25um, gt50um, gt100um):
+	def set_display_2(self, x, y, T_H, all_PMS):
 		self.x = x
 		self.y = y
-		T = str(temperature) + '%'
-		H = str(humidity) + u'°C'
+		T = str(T_H[0]) + '%'
+		H = str(T_H[1]) + u'°C'
 		self.thm = "T&H: %s | %s" % \
 				(T, H)
 				
-		self.aqi1 = '  %s   |  %s  |  %s'%(str(apm10), str(pm10), str(gt03um))
-		self.aqi2 = '  %s   |  %s  |  %s'%(str(apm25), str(pm25), str(gt05um))
-		self.aqi3 = '  %s   |  %s  |  %s'%(str(apm100), str(pm100), str(gt10um))
+		self.aqi1 = '  %s   |  %s  |  %s'%(str(all_PMS[0]), str(all_PMS[3]), str(all_PMS[6]))
+		self.aqi2 = '  %s   |  %s  |  %s'%(str(all_PMS[1]), str(all_PMS[4]), str(all_PMS[7]))
+		self.aqi3 = '  %s   |  %s  |  %s'%(str(all_PMS[2]), str(all_PMS[5]), str(all_PMS[8]))
 		# self.apm10 = 'apm1.0: %sug/m^3'%(str(apm10))
 		# self.apm25 = 'apm2.5: %sug/m^3'%(str(apm25))
 		# self.apm100 = 'apm10: %sug/m^3'%(str(apm100))		
