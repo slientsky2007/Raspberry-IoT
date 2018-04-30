@@ -19,6 +19,7 @@ import time
 import datetime
 
 from onenetapi import OneNetApi
+from basicdef import BasicDef
 
 try:
 	import psutil
@@ -55,8 +56,9 @@ class tcpu(threading.Thread):
 		if self.post2OneNet:
 			self.onenet.num += 1
 			if self.onenet.num >= 10:
-				self.onenet.set("CPU", cpu)
-				r = self.onenet.post_data_flow()
+				if BasicDef.get_network_status():
+					self.onenet.set("CPU", cpu)
+					r = self.onenet.post_data_flow()
 				self.onenet.num = 0
 
 		return [cpu, uptime]

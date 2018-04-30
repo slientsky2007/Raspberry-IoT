@@ -12,12 +12,21 @@
 -------------------------------------------------
 """
 
-import time, os
-import json, argparse, sys
+import time, os, sys
+import json, argparse
 
 class BasicDef():
 	deviceid = None
 	apikey = None
+	#检测网络状态
+	NETWORK_STATUS = False
+	
+	def set_network_status(value):
+		BasicDef.NETWORK_STATUS = value
+	
+	def get_network_status():
+		BasicDef.NETWORK_STATUS = check_network_status()
+		return BasicDef.NETWORK_STATUS
 	
 	def set_device_id(value):
 		BasicDef.deviceid = value
@@ -53,7 +62,6 @@ class BasicDef():
 		args = parse_args(argv[1:])
 		# print('args: ', args)
 		config = parse(args.configfile[int])
-		print()
 		info = config[args.device]
 		value = info[key]
 		return value
@@ -70,3 +78,11 @@ def parse(filename):
 	configfile.close()  
 	return jsonconfig
 
+def check_network_status():
+	exit_code = os.system('ping www.baidu.com -c 1 > /dev/null')
+	# print(exit_code)
+	if exit_code:
+		print("Out offline!")
+		return False
+	else:
+		return True
