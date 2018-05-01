@@ -34,7 +34,7 @@ class tpmsa003(threading.Thread):
 		
 		self.timesleep = timesleep
 		#usb口转UART CH340
-		self.pm_device = usbdevice
+		self.device = usbdevice
 			
 		self.timestamp = None
 		self.apm10 = 0
@@ -64,7 +64,7 @@ class tpmsa003(threading.Thread):
 			self.open_pm_port()
 		except OSError as e:
 			self.is_device = False
-			print("Can't find PMSA003")
+			print("Unable to connect to %s", self.device)
 			return self.is_device
 		while self.__running.isSet():
 			time.sleep(self.timesleep)
@@ -101,7 +101,7 @@ class tpmsa003(threading.Thread):
 					self.onenet.num = 0
 					
 	def open_pm_port(self):
-		self.port = serial.Serial(self.pm_device, baudrate=9600, timeout=2.0)
+		self.port = serial.Serial(self.device, baudrate=9600, timeout=2.0)
         #默认主动模式，不需要发送数据
 		#self.port.write(b'\x42\x4D\xE1\x00\x00\x01\x70')
 		

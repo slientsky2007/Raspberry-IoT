@@ -112,7 +112,7 @@ class tssd1306(threading.Thread):
 				
 			elif self.display == 2:
 				draw.text((x, y+5), self.thm, font=self.font2, fill="white")
-				draw.text((x, y+15), "CO2: ", font=self.font2, fill="white")
+				draw.text((x, y+15), self.co2, font=self.font2, fill="white")
 				draw.text((x, y+25), " APM | PM | Gtum", fill="white")
 				draw.text((x, y+35), self.aqi1, font=self.font2, fill="white")
 				draw.text((x, y+45), self.aqi2, font=self.font2, fill="white")
@@ -142,13 +142,15 @@ class tssd1306(threading.Thread):
 		self.netm = "Tx %s,  Rx %s" % \
 				(BasicDef.bytes2human(netm[0]), BasicDef.bytes2human(netm[1]))
 		
-	def set_display_2(self, x, y, T_H, all_PMS):
+	def set_display_2(self, x, y, T_H, co2, all_PMS):
 		self.x = x
 		self.y = y
 		T = str(T_H[0]) + '%'
 		H = str(T_H[1]) + u'°C'
 		self.thm = "T&H: %s | %s" % \
 				(T, H)
+		
+		self.co2 = "CO2:  %s ppm" % co2
 		
 		if len(all_PMS) >= 12:
 			self.aqi1 = '  %s   |  %s  |  %s'%(str(all_PMS[0]), str(all_PMS[3]), str(all_PMS[6]))

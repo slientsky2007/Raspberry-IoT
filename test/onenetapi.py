@@ -26,7 +26,7 @@ if sys.getdefaultencoding() != defaultencoding:
 	reload(sys)
 	sys.setdefaultencoding(defaultencoding)
 
-class onenet():
+class OneNetApi():
 	def __init__(self):
 		# 设备ID
 		self.DEVICEID = BasicDef.get_device_id()
@@ -190,7 +190,7 @@ def main(argv):
 		BasicDef.set_device_id(_deviceid)
 		BasicDef.set_apikey(_apikey)
 		#初始化onenet对象
-		rPi = onenet()
+		rPi = OneNetApi()
 		
 		#上传10个数据点到数据流Test1/Test2
 		# test_repost(rPi, 'Test1')
@@ -201,8 +201,8 @@ def main(argv):
 		#读取某个数据流中最近的10个数据点
 		test_get_datapoints(rPi, 'Test1', 10)
 
-if __name__ == "__main__":
-	try:
-		main(sys.argv)
-	except KeyboardInterrupt:
-		pass
+# if __name__ == "__main__":
+	# try:
+		# main(sys.argv)
+	# except KeyboardInterrupt:
+		# pass

@@ -21,6 +21,7 @@ from Button import button
 from DHT22Thread import tdht22
 from SSD1306Thread import tssd1306
 from PMSA003Thread import tpmsa003
+from S80053Thread import ts80053
 
 from systeminfo import SystemInfo
 from basicdef import BasicDef
@@ -31,6 +32,7 @@ def main(argv):
 	button_GPIO = 23
 	dht22_GPIO = 24
 	pmsa003_USB = '/dev/ttyUSB0'
+	s80053_USB = '/dev/ttyUSB1'
 	#无线网卡名称
 	wlan_name = "wlan0"
 	
@@ -71,6 +73,8 @@ def main(argv):
 	dht22thread = tdht22(dht22_GPIO, POST_2_ONENET)
 	#初始化Pm传感器，为了读数准确，传感器需要预热30秒时间
 	pmsa003thread = tpmsa003(pmsa003_USB, POST_2_ONENET)
+	#
+	s80053thread = ts80053(s80053_USB, POST_2_ONENET)
 
 	#初始化OLED
 	ssd1306thread = tssd1306()
@@ -88,6 +92,7 @@ def main(argv):
 	#传感器子线程后面启动，因为：
 	pmsa003thread.start()
 	dht22thread.start()
+	s80053thread.start()
 	
 	while True:
 		#主线程时间间隔
@@ -102,7 +107,7 @@ def main(argv):
 			ssd1306thread.set_display_1(0, 10, cputhread.cpum, systeminfo.get_mem_usage(), systeminfo.getIP(), systeminfo.get_RT_network_traffic())
 		elif ssd1306thread.display == 2:
 			#传感器读取的值是异步的，会有延时
-			ssd1306thread.set_display_2(0, 0, dht22thread.T_H, pmsa003thread.all_PMS)
+			ssd1306thread.set_display_2(0, 0, dht22thread.T_H, s80053thread.co2, pmsa003thread.all_PMS)
 		elif ssd1306thread.display == 3 and ssd1306thread.count <= 0:
 			# """Restarts the current program. 
 			# Note: this function does not return. Any cleanup action (like 
