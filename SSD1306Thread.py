@@ -145,8 +145,8 @@ class tssd1306(threading.Thread):
 	def set_display_2(self, x, y, T_H, co2, all_PMS):
 		self.x = x
 		self.y = y
-		T = str(T_H[0]) + '%'
-		H = str(T_H[1]) + u'°C'
+		T = str(T_H[0]) + u'°C'
+		H = str(T_H[1]) + '%'
 		self.thm = "T&H: %s | %s" % \
 				(T, H)
 		
