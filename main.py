@@ -29,12 +29,14 @@ from basicdef import BasicDef
 def main(argv):
 	#休眠时间/秒
 	timesleep = 1
-	button_GPIO = 23
-	dht22_GPIO = 24
-	pmsa003_USB = '/dev/ttyUSB0'
-	s80053_USB = '/dev/ttyUSB1'
 	#无线网卡名称
 	wlan_name = "wlan0"
+	button_GPIO = 23
+	dht22_GPIO = 24
+	#当存在多个USB串口设备时，需检测设备类型后再分配设备名称
+	pmsa003_USB = '/dev/ttyUSB0'
+	s80053_USB = '/dev/ttyUSB1'
+
 	
 	SYSTEM_REBOOT = False
 	SYSTEM_SHUTDOWN = False
