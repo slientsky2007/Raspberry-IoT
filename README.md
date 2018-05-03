@@ -40,6 +40,7 @@ sudo python3 setup.py install
 sudo -H pip3 install psutil
 sudo -H pip3 install --upgrade luma.oled
 sudo -H pip3 install pyserial
+sudo -H pip3 install pymodbus
 ```
 
 ## 需要上传数据到onenet平台时
